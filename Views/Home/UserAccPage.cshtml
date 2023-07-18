@@ -1,0 +1,16 @@
+﻿@model IdentityUser
+
+
+<div class="container">
+    <div class="left">
+        <partial name="_ToolsPartial" model="@Model.UserName" />
+    </div>
+    <div class="middle">
+        <h1>
+            @Model?.UserName
+        </h1>
+    </div>
+    <div class="right">
+        <partial name="_FollowingPartial" />
+    </div>
+</div>

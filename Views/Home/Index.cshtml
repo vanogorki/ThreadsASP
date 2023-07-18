@@ -1,1 +1,28 @@
-﻿<h1>Home View</h1>
+﻿@model IdentityPostViewModel
+
+<style>
+    div.block {
+        width: 100%;
+        word-wrap: break-word;
+    }
+</style>
+
+<div class="container">
+    <div class="left">
+        <partial name="_ToolsPartial" model="@Model.UserName"/>
+    </div>
+    <div class="middle">
+        <h2>Home Page</h2>
+        @foreach (var p in Model.Posts ?? Enumerable.Empty<Post>())
+        {
+            <div style="text-align:left" class="block">
+                <h3>@p.UserName</h3>
+                <p>@p.Text</p>
+                <p style="text-align:right">@p.Date</p>
+            </div>
+        }
+    </div>
+    <div class="right">
+        <partial name="_FollowingPartial" />
+    </div>
+</div>

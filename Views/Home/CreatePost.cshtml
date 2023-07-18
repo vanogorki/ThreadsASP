@@ -1,0 +1,20 @@
+﻿@model Post
+
+
+<div class="container">
+    <div class="left">
+        <partial name="_ToolsPartial" model="@Model.UserName"/>
+    </div>
+    <div class="middle">
+        <form method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <input type="hidden" asp-for="UserName"/>
+            <label asp-for="Text">Type some text!</label>
+            <input type="text" asp-for="Text" />
+            <button type="submit">OK</button>
+        </form>
+    </div>
+    <div class="right">
+        <partial name="_FollowingPartial" />
+    </div>
+</div>

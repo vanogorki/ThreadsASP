@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using ThreadsASP.Models;
+using SportsStore.Models;
 
 namespace ThreadsASP
 {
@@ -14,6 +15,12 @@ namespace ThreadsASP
             builder.Services.AddRazorPages();
 
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddDbContext<ThreadsDbContext>(opts => {
+                opts.UseSqlServer(builder.Configuration["ConnectionStrings:ThreadsConnection"]);
+            });
+
+            builder.Services.AddScoped<IPostsRepository, EFPostsRepository>();
 
             builder.Services.AddDbContext<IdentityContext>(opts =>
                 opts.UseSqlServer(builder.Configuration["ConnectionStrings:IdentityConnection"]));
