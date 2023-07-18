@@ -24,9 +24,9 @@ namespace ThreadsASP.Controllers
 
         public IActionResult Index()
         {
-            return View(new IdentityPostViewModel
+            return View(new UserPostViewModel
             {
-                Posts = postsRepository.Posts,
+                Posts = postsRepository.Posts.OrderByDescending(p => p.Id),
                 UserName = User.Identity?.Name
             });
         }
@@ -40,7 +40,11 @@ namespace ThreadsASP.Controllers
             {
                 return NotFound();
             }
-            return View(acc);
+            return View(new UserPostViewModel
+            {
+                Posts = postsRepository.Posts.Where(p => p.UserName == accName).OrderByDescending(p => p.Id),
+                UserName = accName
+            });
         }
 
         [HttpGet("{action}")]

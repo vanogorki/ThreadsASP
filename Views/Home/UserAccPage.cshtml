@@ -1,14 +1,32 @@
-﻿@model IdentityUser
+﻿@model UserPostViewModel
 
+<style>
+    div.block {
+        width: 100%;
+        word-wrap: break-word;
+    }
+
+    #rcorners1 {
+        border-radius: 25px;
+        border: 2px solid grey;
+        padding: 20px;
+    }
+</style>
 
 <div class="container">
     <div class="left">
         <partial name="_ToolsPartial" model="@Model.UserName" />
     </div>
     <div class="middle">
-        <h1>
-            @Model?.UserName
-        </h1>
+        <h1>@Model?.UserName's Page</h1>
+        @foreach (var p in Model.Posts ?? Enumerable.Empty<Post>())
+        {
+            <div style="text-align:left" class="block m-2" id="rcorners1">
+                <a class="link-info" href="/@p.UserName"><strong>@p.UserName</strong></a>
+                <div>@p.Text</div>
+                <div style="text-align:right">@p.Date</div>
+            </div>
+        }
     </div>
     <div class="right">
         <partial name="_FollowingPartial" />

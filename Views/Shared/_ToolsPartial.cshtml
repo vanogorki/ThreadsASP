@@ -1,5 +1,25 @@
 ﻿@model string
 
-<a class="btn btn-outline-primary" href="/">Home</a>
-<a class="btn btn-outline-primary" href="/@Model">Profile</a>
-<a class="btn btn-outline-primary" href="/createpost">New Post</a>
+<style>
+    #rcorners2 {
+        border-radius: 25px;
+        background: #191970;
+        padding: 20px;
+    }
+</style>
+
+<div id="rcorners2">
+    <div>
+        <a href="/"><h5 style="border-radius: 10px; padding: 5px" class="bg-primary text-white text-center p-2">ThreadsASP</h5></a>
+    </div>
+    <div class="m-4">
+        <a class="btn btn-outline-primary" href="/">Home</a>
+    </div>
+    <div class="m-4">
+        <a class="btn btn-outline-primary" href="/@Model">Profile</a>
+    </div>
+    <div class="m-4">
+        <a class="btn btn-outline-primary" href="/createpost">New Post</a>
+    </div>
+
+</div>

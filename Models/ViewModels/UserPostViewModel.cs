@@ -2,7 +2,7 @@
 
 namespace ThreadsASP.Models.ViewModels
 {
-    public class IdentityPostViewModel
+    public class UserPostViewModel
     {
         public IEnumerable<Post> Posts { get; set; }
             = Enumerable.Empty<Post>();

@@ -3,10 +3,18 @@
 <head>
     <title>ThreadsASP</title>
     <link href="/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+    <style>
+        body {
+            background-color: black;
+            color: white;
+        }
+    </style>
 </head>
-<body>
-    <div class="m-2">
+<body class="container">
+    <div class="left"></div>
+    <div class="m-2 middle">
         @RenderBody()
     </div>
+    <div class="right"></div>
 </body>
 </html>
