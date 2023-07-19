@@ -24,14 +24,17 @@
             <div style="text-align:left" class="block m-2" id="rcorners1">
                 <a class="link-info" href="/@p.UserName"><strong>@p.UserName</strong></a>
                 <div>@p.Text</div>
-                <div style="text-align:right">@p.Date</div>
-                <form method="post" asp-action="DeletePost">
-                    <input name="Id" value="@p.Id" type="hidden"/>
+                <form class="d-inline" method="post" style="visibility:@(Model.IsCurrentUser == true ? "visible" : "hidden")">
+                    <input name="Id" value="@p.Id" type="hidden" />
                     <input name="accName" value="@p.UserName" type="hidden" />
-                    <button style="visibility:@(Model.IsCurrentUser == true ? "visible" : "hidden")" type="submit"
-                        class="btn btn-danger btn-sm">Delete
+                    <button type="submit" class="btn btn-danger btn-sm mt-2" asp-action="DeletePost">
+                        Delete
+                    </button>
+                    <button type="submit" class="btn btn-warning btn-sm mt-2" asp-action="EditPost">
+                        Edit
                     </button>
                 </form>
+                <div class="d-inline" style="float:right">@p.Date</div>
             </div>
         }
     </div>

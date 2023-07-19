@@ -27,6 +27,7 @@ namespace ThreadsASP.Controllers
             return View(new UserPostViewModel
             {
                 Posts = postsRepository.Posts.OrderByDescending(p => p.Id),
+                SelectedUserName = null,
                 CurrentUserName = User.Identity?.Name,
                 IsCurrentUser = true
             });
@@ -43,32 +44,50 @@ namespace ThreadsASP.Controllers
             }
             return View(new UserPostViewModel
             {
-                Posts = postsRepository.Posts.Where(p => p.UserName == accName).OrderByDescending(p => p.Id),
-                SelectedUserName = accName,
+                Posts = postsRepository.Posts.Where(p => p.UserName == acc.UserName).OrderByDescending(p => p.Id),
+                SelectedUserName = acc.UserName,
                 CurrentUserName = User.Identity?.Name,
-                IsCurrentUser = (accName == User.Identity?.Name) ? true : false
+                IsCurrentUser = (acc.UserName == User.Identity?.Name) ? true : false
             });
         }
 
         [HttpGet("{action}")]
-        public IActionResult CreatePost()
+        public IActionResult CreatePost(Post p)
         {
+            if (p.Id != 0)
+            {
+                return View(p);
+            }
             var newPost = new Post()
             {
-                UserName = User.Identity?.Name
+                UserName = User.Identity?.Name,
+                Text = null
             };
             return View(newPost);
         }
 
         [HttpPost("{action}")]
-        public IActionResult CreatePost(string UserName, string Text)
+        public IActionResult CreatePost(int Id, string TextArea)
         {
             if (ModelState.IsValid)
             {
+                var oldPost = postsRepository.Posts.FirstOrDefault(p => p.Id == Id);
+                if (oldPost != null)
+                {
+                    postsRepository.DeletePost(oldPost);
+                    var newEditedPost = new Post()
+                    {
+                        UserName = User.Identity?.Name,
+                        Text = TextArea,
+                        Date = DateTime.Now.ToString("dd-MM-yyyy"),
+                    };
+                    postsRepository.CreatePost(newEditedPost);
+                    return RedirectToAction("Index");
+                }
                 var newPost = new Post()
                 {
-                    UserName = UserName,
-                    Text = Text,
+                    UserName = User.Identity?.Name,
+                    Text = TextArea,
                     Date = DateTime.Now.ToString("dd-MM-yyyy"),
                 };
                 postsRepository.CreatePost(newPost);
@@ -87,6 +106,16 @@ namespace ThreadsASP.Controllers
             }
             postsRepository.DeletePost(removePost);
             return Redirect($"http://localhost:5000/{accName}");
+        }
+        [HttpPost]
+        public IActionResult EditPost(int Id)
+        {
+            var editPost = postsRepository.Posts.FirstOrDefault(p =>p.Id == Id);
+            if (editPost == null)
+            {
+                return NotFound();
+            }
+            return RedirectToAction("CreatePost", editPost);
         }
     }
 }

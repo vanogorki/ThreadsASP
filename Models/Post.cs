@@ -8,7 +8,7 @@ namespace ThreadsASP.Models
         [Required]
         public string? UserName { get; set; }
         [Required]
-        [MaxLength(200)]
+        [MaxLength(300)]
         public string? Text { get; set; }
         [Required]
         public string? Date { get; set; }
