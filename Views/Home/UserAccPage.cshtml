@@ -15,16 +15,23 @@
 
 <div class="container">
     <div class="left">
-        <partial name="_ToolsPartial" model="@Model.UserName" />
+        <partial name="_ToolsPartial" model="@Model.CurrentUserName" />
     </div>
     <div class="middle">
-        <h1>@Model?.UserName's Page</h1>
+        <h1>@Model.SelectedUserName's Page</h1>
         @foreach (var p in Model.Posts ?? Enumerable.Empty<Post>())
         {
             <div style="text-align:left" class="block m-2" id="rcorners1">
                 <a class="link-info" href="/@p.UserName"><strong>@p.UserName</strong></a>
                 <div>@p.Text</div>
                 <div style="text-align:right">@p.Date</div>
+                <form method="post" asp-action="DeletePost">
+                    <input name="Id" value="@p.Id" type="hidden"/>
+                    <input name="accName" value="@p.UserName" type="hidden" />
+                    <button style="visibility:@(Model.IsCurrentUser == true ? "visible" : "hidden")" type="submit"
+                        class="btn btn-danger btn-sm">Delete
+                    </button>
+                </form>
             </div>
         }
     </div>

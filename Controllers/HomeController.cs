@@ -27,7 +27,8 @@ namespace ThreadsASP.Controllers
             return View(new UserPostViewModel
             {
                 Posts = postsRepository.Posts.OrderByDescending(p => p.Id),
-                UserName = User.Identity?.Name
+                CurrentUserName = User.Identity?.Name,
+                IsCurrentUser = true
             });
         }
 
@@ -43,7 +44,9 @@ namespace ThreadsASP.Controllers
             return View(new UserPostViewModel
             {
                 Posts = postsRepository.Posts.Where(p => p.UserName == accName).OrderByDescending(p => p.Id),
-                UserName = accName
+                SelectedUserName = accName,
+                CurrentUserName = User.Identity?.Name,
+                IsCurrentUser = (accName == User.Identity?.Name) ? true : false
             });
         }
 
@@ -72,6 +75,18 @@ namespace ThreadsASP.Controllers
                 return RedirectToAction("Index");
             }
             return View();
+        }
+
+        [HttpPost]
+        public IActionResult DeletePost(int Id, string accName)
+        {
+            var removePost = postsRepository.Posts.FirstOrDefault(p => p.Id == Id);
+            if (removePost == null)
+            {
+                return NotFound();
+            }
+            postsRepository.DeletePost(removePost);
+            return Redirect($"http://localhost:5000/{accName}");
         }
     }
 }

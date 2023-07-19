@@ -11,9 +11,8 @@
         <form method="post">
             <input type="hidden" asp-for="UserName"/>
             <div class="form-group">
-                <label asp-for="Text">Type some text!</label>
                 <textarea style="max-height:200px; height:150px; background-color:black; color:white"
-                    type="text" asp-for="Text" class="form-control">
+                          type="text" asp-for="Text" class="form-control" placeholder="Type some text!">
                 </textarea>
             </div>
             <button class="btn btn-primary mt-2" type="submit">Post</button>
