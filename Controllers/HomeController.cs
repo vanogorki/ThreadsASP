@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using SportsStore.Models;
+using ThreadsASP.FileUploadService;
 using ThreadsASP.Models;
 using ThreadsASP.Models.ViewModels;
 
@@ -13,13 +13,15 @@ namespace ThreadsASP.Controllers
     public class HomeController : Controller
     {
         private IPostsRepository postsRepository;
-
         private UserManager<IdentityUser> userManager;
+        private readonly IFileUploadService fileUploadService;
 
-        public HomeController(UserManager<IdentityUser> manager, IPostsRepository posts)
+        public HomeController(UserManager<IdentityUser> manager,
+            IPostsRepository posts, IFileUploadService fileUploadService)
         {
             postsRepository = posts;
             userManager = manager;
+            this.fileUploadService = fileUploadService;
         }
 
         public IActionResult Index()
@@ -67,30 +69,22 @@ namespace ThreadsASP.Controllers
         }
 
         [HttpPost("{action}")]
-        public IActionResult CreatePost(int Id, string TextArea)
+        public async Task<IActionResult> CreatePost(int Id, string TextArea, IFormFile? file)
         {
             if (ModelState.IsValid)
             {
+                if (file != null)
+                {
+                    await fileUploadService.UploadFileAsync(file);
+                }
                 var oldPost = postsRepository.Posts.FirstOrDefault(p => p.Id == Id);
                 if (oldPost != null)
                 {
                     postsRepository.DeletePost(oldPost);
-                    var newEditedPost = new Post()
-                    {
-                        UserName = User.Identity?.Name,
-                        Text = TextArea,
-                        Date = DateTime.Now.ToString("dd-MM-yyyy"),
-                    };
-                    postsRepository.CreatePost(newEditedPost);
+                    CreatePostMethod(TextArea, file);
                     return RedirectToAction("Index");
                 }
-                var newPost = new Post()
-                {
-                    UserName = User.Identity?.Name,
-                    Text = TextArea,
-                    Date = DateTime.Now.ToString("dd-MM-yyyy"),
-                };
-                postsRepository.CreatePost(newPost);
+                CreatePostMethod(TextArea, file);
                 return RedirectToAction("Index");
             }
             return View();
@@ -104,6 +98,7 @@ namespace ThreadsASP.Controllers
             {
                 return NotFound();
             }
+            DeleteImage(removePost.ImgName);
             postsRepository.DeletePost(removePost);
             return Redirect($"http://localhost:5000/{accName}");
         }
@@ -115,7 +110,33 @@ namespace ThreadsASP.Controllers
             {
                 return NotFound();
             }
+            DeleteImage(editPost.ImgName);
             return RedirectToAction("CreatePost", editPost);
+        }
+
+        private void CreatePostMethod(string TextArea, IFormFile? file)
+        {
+            var newPost = new Post()
+            {
+                UserName = User.Identity?.Name,
+                Text = TextArea,
+                Date = DateTime.Now.ToString("dd-MM-yyyy"),
+                ImgName = file?.FileName
+            };
+            postsRepository.CreatePost(newPost);
+            
+        }
+
+        private void DeleteImage(string? ImgName)
+        {
+            try
+            {
+                System.IO.File.Delete(@$"wwwroot\images\{ImgName}");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
         }
     }
 }

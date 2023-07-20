@@ -11,6 +11,11 @@
         border: 2px solid grey;
         padding: 20px;
     }
+
+    #rcornersImage {
+        border-radius: 30px;
+        padding: 20px;
+    }
 </style>
 
 <div class="container">
@@ -24,13 +29,19 @@
             <div style="text-align:left" class="block m-2" id="rcorners1">
                 <a class="link-info" href="/@p.UserName"><strong>@p.UserName</strong></a>
                 <div>@p.Text</div>
+                @if (p.ImgName != null)
+                {
+                    <div>
+                        <img style="max-height:400px; max-width:600px" id="rcornersImage" src="/images/@p.ImgName">
+                    </div>
+                }
                 <form class="d-inline" method="post" style="visibility:@(Model.IsCurrentUser == true ? "visible" : "hidden")">
                     <input name="Id" value="@p.Id" type="hidden" />
                     <input name="accName" value="@p.UserName" type="hidden" />
-                    <button type="submit" class="btn btn-danger btn-sm mt-2" asp-action="DeletePost">
+                    <button type="submit" class="btn btn-outline-danger btn-sm mt-2" asp-action="DeletePost">
                         Delete
                     </button>
-                    <button type="submit" class="btn btn-warning btn-sm mt-2" asp-action="EditPost">
+                    <button type="submit" class="btn btn-outline-warning btn-sm mt-2" asp-action="EditPost">
                         Edit
                     </button>
                 </form>

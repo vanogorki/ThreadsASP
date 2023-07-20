@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using ThreadsASP.Models;
 using SportsStore.Models;
+using ThreadsASP.FileUploadService;
 
 namespace ThreadsASP
 {
@@ -21,6 +22,8 @@ namespace ThreadsASP
             });
 
             builder.Services.AddScoped<IPostsRepository, EFPostsRepository>();
+
+            builder.Services.AddScoped<IFileUploadService, LocalFileUploadService>();
 
             builder.Services.AddDbContext<IdentityContext>(opts =>
                 opts.UseSqlServer(builder.Configuration["ConnectionStrings:IdentityConnection"]));

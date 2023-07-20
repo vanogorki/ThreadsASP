@@ -12,5 +12,6 @@ namespace ThreadsASP.Models
         public string? Text { get; set; }
         [Required]
         public string? Date { get; set; }
+        public string? ImgName { get; set; }
     }
 }
