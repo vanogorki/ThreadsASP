@@ -58,7 +58,7 @@
                 await UserManager.CreateAsync(user, Password);
                 if (result.Succeeded)
                 {
-                    return RedirectToPage("List");
+                    return RedirectToPage("Login");
                 }
                 foreach (IdentityError err in result.Errors)
                 {

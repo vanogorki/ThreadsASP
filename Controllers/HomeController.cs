@@ -24,52 +24,52 @@ namespace ThreadsASP.Controllers
             this.fileUploadService = fileUploadService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             return View(new UserPostViewModel
             {
-                Posts = postsRepository.Posts.OrderByDescending(p => p.Id),
-                SelectedUserName = null,
-                CurrentUserName = User.Identity?.Name,
-                IsCurrentUser = true
+                Posts = postsRepository.Posts.OrderByDescending(p => p.PostId),
+                SelectedUser = null,
+                CurrentUser = await userManager.FindByNameAsync(User.Identity?.Name),
+                IsCurrentUser = true,
             });
         }
 
         [HttpGet("{accName}")]
         public async Task<IActionResult> UserAccPage(string accName)
         {
-            var acc = await
+            var selectedAcc = await
             userManager.FindByNameAsync(accName);
-            if (acc == null)
+            if (selectedAcc == null)
             {
                 return NotFound();
             }
             return View(new UserPostViewModel
             {
-                Posts = postsRepository.Posts.Where(p => p.UserName == acc.UserName).OrderByDescending(p => p.Id),
-                SelectedUserName = acc.UserName,
-                CurrentUserName = User.Identity?.Name,
-                IsCurrentUser = (acc.UserName == User.Identity?.Name) ? true : false
+                Posts = postsRepository.Posts.
+                    Where(p => p.PostUserName == selectedAcc.UserName).OrderByDescending(p => p.PostId),
+                SelectedUser = selectedAcc,
+                CurrentUser = await userManager.FindByNameAsync(User.Identity?.Name),
+                IsCurrentUser = (selectedAcc.UserName == User.Identity?.Name) ? true : false
             });
         }
 
         [HttpGet("{action}")]
-        public IActionResult CreatePost(Post p)
+        public async Task<IActionResult> CreatePost(Post p)
         {
-            if (p.Id != 0)
+            if (p?.PostId != null)
             {
                 return View(p);
             }
             var newPost = new Post()
             {
-                UserName = User.Identity?.Name,
-                Text = null
+               PostUserName = User.Identity?.Name,
             };
             return View(newPost);
         }
 
         [HttpPost("{action}")]
-        public async Task<IActionResult> CreatePost(int Id, string TextArea, IFormFile? file)
+        public async Task<IActionResult> CreatePost(long? Id, string TextArea, IFormFile? file)
         {
             if (ModelState.IsValid)
             {
@@ -77,23 +77,23 @@ namespace ThreadsASP.Controllers
                 {
                     await fileUploadService.UploadFileAsync(file);
                 }
-                var oldPost = postsRepository.Posts.FirstOrDefault(p => p.Id == Id);
+                var oldPost = postsRepository.Posts.FirstOrDefault(p => p.PostId == Id);
                 if (oldPost != null)
                 {
                     postsRepository.DeletePost(oldPost);
-                    CreatePostMethod(TextArea, file);
+                    await CreatePostMethod(TextArea, file);
                     return RedirectToAction("Index");
                 }
-                CreatePostMethod(TextArea, file);
+                await CreatePostMethod(TextArea, file);
                 return RedirectToAction("Index");
             }
             return View();
         }
 
         [HttpPost]
-        public IActionResult DeletePost(int Id, string accName)
+        public IActionResult DeletePost(long Id, string accName)
         {
-            var removePost = postsRepository.Posts.FirstOrDefault(p => p.Id == Id);
+            var removePost = postsRepository.Posts.FirstOrDefault(p => p.PostId == Id);
             if (removePost == null)
             {
                 return NotFound();
@@ -103,9 +103,9 @@ namespace ThreadsASP.Controllers
             return Redirect($"http://localhost:5000/{accName}");
         }
         [HttpPost]
-        public IActionResult EditPost(int Id)
+        public IActionResult EditPost(long? Id)
         {
-            var editPost = postsRepository.Posts.FirstOrDefault(p =>p.Id == Id);
+            var editPost = postsRepository.Posts.FirstOrDefault(p =>p.PostId == Id);
             if (editPost == null)
             {
                 return NotFound();
@@ -114,11 +114,11 @@ namespace ThreadsASP.Controllers
             return RedirectToAction("CreatePost", editPost);
         }
 
-        private void CreatePostMethod(string TextArea, IFormFile? file)
+        private async Task CreatePostMethod(string TextArea, IFormFile? file)
         {
             var newPost = new Post()
             {
-                UserName = User.Identity?.Name,
+                PostUserName = User.Identity?.Name,
                 Text = TextArea,
                 Date = DateTime.Now.ToString("dd-MM-yyyy"),
                 ImgName = file?.FileName

@@ -6,10 +6,11 @@ namespace ThreadsASP.Models.ViewModels
     {
         public IEnumerable<Post> Posts { get; set; }
             = Enumerable.Empty<Post>();
-        public string? SelectedUserName { get; set; }
 
-        public string? CurrentUserName { get; set; }
+        public IdentityUser? SelectedUser { get; set; }
 
         public bool? IsCurrentUser { get; set; }
+        
+        public IdentityUser? CurrentUser { get; set; }
     }
 }

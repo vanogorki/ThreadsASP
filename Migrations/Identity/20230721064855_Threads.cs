@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace ThreadsASP.Migrations
+namespace ThreadsASP.Migrations.Identity
 {
-    public partial class Initial : Migration
+    public partial class Threads : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

@@ -8,10 +8,10 @@ using ThreadsASP.Models;
 
 #nullable disable
 
-namespace ThreadsASP.Migrations.ThreadsDb
+namespace ThreadsASP.Migrations
 {
     [DbContext(typeof(ThreadsDbContext))]
-    [Migration("20230720071738_Threads")]
+    [Migration("20230721064745_Threads")]
     partial class Threads
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,11 +25,11 @@ namespace ThreadsASP.Migrations.ThreadsDb
 
             modelBuilder.Entity("ThreadsASP.Models.Post", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("PostId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("PostId"), 1L, 1);
 
                     b.Property<string>("Date")
                         .IsRequired()
@@ -38,16 +38,16 @@ namespace ThreadsASP.Migrations.ThreadsDb
                     b.Property<string>("ImgName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("PostUserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Text")
                         .IsRequired()
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
 
-                    b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
+                    b.HasKey("PostId");
 
                     b.ToTable("Posts");
                 });
