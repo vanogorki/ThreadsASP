@@ -7,10 +7,10 @@ namespace ThreadsASP.Models.ViewModels
         public IEnumerable<Post> Posts { get; set; }
             = Enumerable.Empty<Post>();
 
-        public IdentityUser? SelectedUser { get; set; }
+        public ApplicationUser? SelectedUser { get; set; }
 
         public bool? IsCurrentUser { get; set; }
         
-        public IdentityUser? CurrentUser { get; set; }
+        public ApplicationUser? CurrentUser { get; set; }
     }
 }

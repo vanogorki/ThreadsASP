@@ -24,18 +24,32 @@
     </div>
     
     <div class="middle">
-        <div>
-            <h1>@Model.SelectedUser?.UserName</h1>
-            @if (Model?.IsCurrentUser == true)
-            {
-                <a class="mb-2 btn btn-outline-primary" href="/Account/Editor/@Model.CurrentUser?.Id">Edit Profile</a>
-            }
+        <div style="display:flex; height:200px">
+            <div style="width:200px; flex:1;">
+                <img src="/images/@Model.SelectedUser?.ProfileImgName"
+                     style="max-height:125px; max-width:125px; height:100%; width:100%; border-radius:50%;" />
+                <h1>@Model.SelectedUser?.UserName</h1>
+            </div>
+            <div style="flex:2;">
+                @if (Model?.IsCurrentUser == true)
+                {
+                    <form method="post" enctype="multipart/form-data">
+                        <input class="form-control form-control-sm" type="file" accept="image/*" name="file" style="width:200px" />
+                        <button asp-action="SetProfilePicture" style="display:flex; align-items:flex-start" class="mt-2 btn btn-outline-primary" type="submit">Change Profile Pic</button>
+                    </form>
+                    <a class="mt-2 btn btn-outline-primary" style="float:left" href="/Account/Editor/@Model.CurrentUser?.Id">Edit Profile</a>
+                }
+            </div>
         </div>
         
         @foreach (var p in Model?.Posts ?? Enumerable.Empty<Post>())
         {
             <div style="text-align:left" class="block m-2" id="rcorners1">
-                <a class="link-info" href="/@p.PostUserName"><strong>@p.PostUserName</strong></a>
+                <a href="/@p.AppUser?.UserName">
+                    <img class="d-block" src="/images/@p.AppUser?.ProfileImgName"
+                         style="overflow:hidden; border-radius:50%; max-height:50px; max-width:50px; height:50px; width:50px;" />
+                </a>
+                <a class="link-info d-block" href="/@p.AppUser?.UserName"><strong>@p.AppUser?.UserName</strong></a>
                 <div>@p.Text</div>
                 @if (p.ImgName != null)
                 {
@@ -44,8 +58,8 @@
                     </div>
                 }
                 <form class="d-inline" method="post" style="visibility:@(Model?.IsCurrentUser == true ? "visible" : "hidden")">
-                    <input name="Id" value="@p.PostId" type="hidden" />
-                    <input name="accName" value="@p.PostUserName" type="hidden" />
+                    <input name="Id" value="@p.Id" type="hidden" />
+                    <input name="accName" value="@p.AppUser?.UserName" type="hidden" />
                     <button type="submit" class="btn btn-outline-danger btn-sm mt-2" asp-action="DeletePost">
                         Delete
                     </button>

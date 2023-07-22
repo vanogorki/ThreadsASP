@@ -17,19 +17,15 @@ namespace ThreadsASP
 
             builder.Services.AddControllersWithViews();
 
-            builder.Services.AddDbContext<ThreadsDbContext>(opts => {
-                opts.UseSqlServer(builder.Configuration["ConnectionStrings:ThreadsConnection"]);
-            });
-
             builder.Services.AddScoped<IPostsRepository, EFPostsRepository>();
 
             builder.Services.AddScoped<IFileUploadService, LocalFileUploadService>();
 
-            builder.Services.AddDbContext<IdentityContext>(opts =>
-                opts.UseSqlServer(builder.Configuration["ConnectionStrings:IdentityConnection"]));
+            builder.Services.AddDbContext<AppDbContext>(opts =>
+                opts.UseSqlServer(builder.Configuration["ConnectionStrings:AppConnection"]));
             
-            builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-                .AddEntityFrameworkStores<IdentityContext>();
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<AppDbContext>();
 
             builder.Services.Configure<IdentityOptions>(opts => {
                 opts.Password.RequiredLength = 6;

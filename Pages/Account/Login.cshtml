@@ -24,9 +24,9 @@
 @functions {
     public class LoginModel : PageModel
     {
-        private SignInManager<IdentityUser> signInManager;
+        private SignInManager<ApplicationUser> signInManager;
         
-        public LoginModel(SignInManager<IdentityUser> signinMgr)
+        public LoginModel(SignInManager<ApplicationUser> signinMgr)
         {
             signInManager = signinMgr;
         }

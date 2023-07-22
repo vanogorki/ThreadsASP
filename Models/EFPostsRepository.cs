@@ -1,17 +1,18 @@
-﻿using SportsStore.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using SportsStore.Models;
 
 namespace ThreadsASP.Models
 {
     public class EFPostsRepository : IPostsRepository
     {
-        private ThreadsDbContext context;
+        private AppDbContext context;
 
-        public EFPostsRepository(ThreadsDbContext ctx)
+        public EFPostsRepository(AppDbContext ctx)
         {
             context = ctx;
         }
 
-        public IQueryable<Post> Posts => context.Posts;
+        public IQueryable<Post> Posts => context.Posts.Include(x => x.AppUser);
 
         public void DeletePost(Post p)
         {

@@ -38,11 +38,11 @@
     [Authorize]
     public class EditorModel : PageModel
     {
-        private SignInManager<IdentityUser> signInManager;
+        private SignInManager<ApplicationUser> signInManager;
 
-        public UserManager<IdentityUser> UserManager;
+        public UserManager<ApplicationUser> UserManager;
 
-        public EditorModel(UserManager<IdentityUser> usrManager, SignInManager<IdentityUser> signInManager)
+        public EditorModel(UserManager<ApplicationUser> usrManager, SignInManager<ApplicationUser> signInManager)
         {
             this.signInManager = signInManager;
             UserManager = usrManager;
@@ -63,7 +63,7 @@
 
         public async Task<IActionResult> OnGetAsync(string id)
         {
-            IdentityUser user = await UserManager.FindByIdAsync(id);
+            ApplicationUser user = await UserManager.FindByIdAsync(id);
             if (user.UserName != User.Identity?.Name)
             {
                 return NotFound();
@@ -76,7 +76,7 @@
         {
             if (ModelState.IsValid)
             {
-                IdentityUser user = await UserManager.FindByIdAsync(Id);
+                ApplicationUser user = await UserManager.FindByIdAsync(Id);
                 user.UserName = UserName;
                 user.Email = Email;
                 IdentityResult result = await UserManager.UpdateAsync(user);

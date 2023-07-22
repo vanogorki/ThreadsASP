@@ -13,9 +13,9 @@
 @functions {
     public class LogoutModel : PageModel
     {
-        private SignInManager<IdentityUser> signInManager;
+        private SignInManager<ApplicationUser> signInManager;
         
-        public LogoutModel(SignInManager<IdentityUser> signInMgr)
+        public LogoutModel(SignInManager<ApplicationUser> signInMgr)
         {
             signInManager = signInMgr;
         }

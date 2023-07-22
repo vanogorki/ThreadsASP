@@ -31,9 +31,9 @@
 @functions {
     public class SignupModel : PageModel
     {
-        public UserManager<IdentityUser> UserManager;
+        private UserManager<ApplicationUser> UserManager;
         
-        public SignupModel(UserManager<IdentityUser> usrManager)
+        public SignupModel(UserManager<ApplicationUser> usrManager)
         {
             UserManager = usrManager;
         }
@@ -52,8 +52,8 @@
         {
             if (ModelState.IsValid)
             {
-                IdentityUser user =
-                new IdentityUser { UserName = UserName, Email = Email };
+                ApplicationUser user =
+                new ApplicationUser { UserName = UserName, Email = Email };
                 IdentityResult result =
                 await UserManager.CreateAsync(user, Password);
                 if (result.Succeeded)

@@ -3,12 +3,12 @@
 
 <div class="container">
     <div class="left">
-        <partial name="_ToolsPartial" model="@Model.PostUserName" />
+        <partial name="_ToolsPartial" model="@Model.AppUser?.UserName" />
     </div>
     <div class="middle">
         <h1>Create Post</h1>
         <form method="post" enctype="multipart/form-data">
-            <input asp-for="PostId" type="hidden"/>
+            <input asp-for="Id" type="hidden"/>
             <div class="form-group">
                 <textarea style="max-height:200px; height:200px; background-color:black; color:white; resize:none"
                           type="text" name="TextArea" maxlength="300" class="form-control" placeholder="Type some text!" 

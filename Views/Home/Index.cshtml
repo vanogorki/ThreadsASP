@@ -27,12 +27,17 @@
         @foreach (var p in Model.Posts ?? Enumerable.Empty<Post>())
         {
             <div style="text-align:left" class="block m-2" id="rcorners1">
-                <a class="link-info" href="/@p.PostUserName"><strong>@p.PostUserName</strong></a>
+                <a href="/@p.AppUser?.UserName">
+                    <img class="d-block" src="/images/@p.AppUser?.ProfileImgName"
+                     style="overflow:hidden; border-radius:50%; max-height:50px; max-width:50px; height:50px; width:50px;" />
+                </a>
+                <a class="link-info d-block" href="/@p.AppUser?.UserName"><strong>@p.AppUser?.UserName</strong></a>
                 <div>@p.Text</div>
                 @if (p.ImgName != null)
                 {
                     <div>
-                        <img style="max-height:400px; max-width:600px; height:100%; width:100%" id="rcornersImage" src="/images/@p.ImgName">
+                        <img style="max-height:400px; max-width:600px; height:100%; width:100%"
+                             id="rcornersImage" src="/images/@p.ImgName">
                     </div>
                 }
                 <div style="text-align:right">@p.Date</div>
