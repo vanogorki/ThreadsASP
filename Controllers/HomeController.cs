@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using SportsStore.Models;
+using Microsoft.EntityFrameworkCore;
 using ThreadsASP.FileUploadService;
 using ThreadsASP.Models;
+using ThreadsASP.Models.Repositories;
 using ThreadsASP.Models.ViewModels;
 
 
@@ -14,44 +15,42 @@ namespace ThreadsASP.Controllers
     {
         private IPostsRepository postsRepository;
         private UserManager<ApplicationUser> userManager;
-        private readonly IFileUploadService fileUploadService;
+        private readonly IFileService fileUploadService;
+        private IFollowsRepository followsRepository;
 
-        public HomeController(UserManager<ApplicationUser> manager,
-            IPostsRepository posts, IFileUploadService fileUploadService)
+        public HomeController(UserManager<ApplicationUser> userManager,
+            IPostsRepository postsRepository, IFileService fileUploadService, IFollowsRepository followsRepository)
         {
-            postsRepository = posts;
-            userManager = manager;
+            this.postsRepository = postsRepository;
+            this.userManager = userManager;
             this.fileUploadService = fileUploadService;
+            this.followsRepository = followsRepository;
         }
+        
 
         public async Task<IActionResult> Index()
         {
-            return View(new UserPostViewModel
+            var currentUser = await userManager.GetUserAsync(User);
+            List<Follow> followingUsers = await followsRepository.Follows.Where(x => x.FollowingUserId == currentUser.Id).ToListAsync();
+            return View(new HomeViewModel
             {
-                Posts = postsRepository.Posts.OrderByDescending(p => p.Id),
-                SelectedUser = null,
-                CurrentUser = await userManager.FindByNameAsync(User.Identity?.Name),
-                IsCurrentUser = true,
+                Posts = await postsRepository.Posts.Where(c => followingUsers.Select(
+                    s => s.FollowerUserId).Contains(c.AppUserId) || c.AppUserId == currentUser.Id).OrderByDescending(i => i.Id).ToListAsync(),
+                CurrentUser = await userManager.GetUserAsync(User)
             });
         }
 
-        [HttpGet("{accName}")]
-        public async Task<IActionResult> UserAccPage(string accName)
+        public async Task<IActionResult> ToolsPartial()
         {
-            var selectedAcc = await
-            userManager.FindByNameAsync(accName);
-            if (selectedAcc == null)
-            {
-                return NotFound();
-            }
-            return View(new UserPostViewModel
-            {
-                Posts = postsRepository.Posts.
-                    Where(p => p.AppUser.UserName == selectedAcc.UserName).OrderByDescending(p => p.Id),
-                SelectedUser = selectedAcc,
-                CurrentUser = await userManager.FindByNameAsync(User.Identity?.Name),
-                IsCurrentUser = (selectedAcc.UserName == User.Identity?.Name) ? true : false
-            });
+            var currentUser = await userManager.GetUserAsync(User);
+            return PartialView("_ToolsPartial", currentUser.UserName);
+        }
+
+        public async Task<IActionResult> FollowingPartial()
+        {
+            var currentUser = await userManager.GetUserAsync(User);
+            List<Follow> followingUsers = await followsRepository.Follows.Where(x => x.FollowingUserId == currentUser.Id).ToListAsync();
+            return PartialView("_FollowingPartial", followingUsers);
         }
 
         [HttpGet("{action}")]
@@ -63,11 +62,12 @@ namespace ThreadsASP.Controllers
             }
             var newPost = new Post()
             {
-                AppUser = await userManager.FindByNameAsync(User.Identity?.Name)
+                AppUser = await userManager.GetUserAsync(User)
             };
             return View(newPost);
         }
 
+        
         [HttpPost("{action}")]
         public async Task<IActionResult> CreatePost(long? Id, string TextArea, IFormFile? file)
         {
@@ -80,6 +80,7 @@ namespace ThreadsASP.Controllers
                 var oldPost = postsRepository.Posts.FirstOrDefault(p => p.Id == Id);
                 if (oldPost != null)
                 {
+                    LocalFileService.DeleteImage(oldPost.ImgName);
                     postsRepository.DeletePost(oldPost);
                     await CreatePostMethod(TextArea, file);
                     return RedirectToAction("Index");
@@ -89,68 +90,19 @@ namespace ThreadsASP.Controllers
             }
             return View();
         }
-
-        [HttpPost]
-        public IActionResult DeletePost(long Id, string accName)
-        {
-            var removePost = postsRepository.Posts.FirstOrDefault(p => p.Id == Id);
-            if (removePost == null)
-            {
-                return NotFound();
-            }
-            DeleteImage(removePost.ImgName);
-            postsRepository.DeletePost(removePost);
-            return Redirect($"http://localhost:5000/{accName}");
-        }
-        [HttpPost]
-        public IActionResult EditPost(long? Id)
-        {
-            var editPost = postsRepository.Posts.FirstOrDefault(p => p.Id == Id);
-            if (editPost == null)
-            {
-                return NotFound();
-            }
-            DeleteImage(editPost.ImgName);
-            return RedirectToAction("CreatePost", editPost);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> SetProfilePicture(IFormFile? file)
-        {
-            var user = await userManager.FindByNameAsync(User.Identity?.Name);
-            if (file != null)
-            {
-                await fileUploadService.UploadFileAsync(file);
-                user.ProfileImgName = file.FileName;
-                user.Save();
-                return Redirect($"http://localhost:5000/{user.UserName}");
-            }
-            return Redirect($"http://localhost:5000/{user.UserName}");
-        }
+       
 
         private async Task CreatePostMethod(string TextArea, IFormFile? file)
         {
 
             var newPost = new Post()
             {
-                AppUser = await userManager.FindByNameAsync(User.Identity?.Name),
+                AppUser = await userManager.GetUserAsync(User),
                 Text = TextArea,
                 Date = DateTime.Now.ToString("dd-MM-yyyy"),
                 ImgName = file?.FileName
             };
             postsRepository.CreatePost(newPost);
-        }
-
-        private void DeleteImage(string? ImgName)
-        {
-            try
-            {
-                System.IO.File.Delete(@$"wwwroot\images\{ImgName}");
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString());
-            }
         }
     }
 }

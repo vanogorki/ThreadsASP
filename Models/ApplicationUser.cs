@@ -5,21 +5,9 @@ namespace ThreadsASP.Models
 {
     public class ApplicationUser : IdentityUser
     {
-        private AppDbContext context;
-        
-        public ApplicationUser(AppDbContext ctx)
-        {
-            context = ctx;
-        }
-        public ApplicationUser() { }
-        
-        public string ProfileImgName { get; set; } = "Default.png";
-        
-        public ICollection<Post> Posts { get; set; } = new List<Post>();
-
-        public void Save()
-        {
-            context.SaveChanges();
-        }
+        public string ProfileImgName { get; set; } = "Default.jpg";
+        public ICollection<Post> Posts { get; set; }
+        public ICollection<Follow> SendFollows { get; set; }
+        public ICollection<Follow> ReceiveFollows { get; set; }
     }
 }

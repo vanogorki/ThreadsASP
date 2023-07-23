@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+
+<html lang="en-us">
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <link href="/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" type="text/css" />
+    <link href="/css/style.css" rel="stylesheet" type="text/css" />
+    
+    <style>
+        body {
+            background-color: black;
+            color: white;
+        }
+
+        .my-container {
+            display: flex;
+            justify-content: center;
+        }
+
+        .left, .right {
+            width: 15%;
+            float: left;
+            margin: 10px;
+            text-align: center;
+        }
+
+        .middle {
+            width: 30%;
+            float: left;
+            margin: 10px;
+            text-align: center;
+        }
+    </style>
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script type="text/jscript">
+        $(document).ready(function () {
+            $("#ToolsPartial").load('/home/ToolsPartial');
+        });
+
+        $(document).ready(function () {
+            $("#FollowingPartial").load('/home/FollowingPartial');
+        });
+    </script>
+
+</head>
+
+<body>
+    <div class="m-2 my-container">
+        <div class="left" id="ToolsPartial"></div>
+        <div class="middle">
+            @RenderBody()
+        </div>
+        <div class="right" id="FollowingPartial"></div>
+    </div>
+</body>
+</html>

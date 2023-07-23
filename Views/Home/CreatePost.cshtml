@@ -1,26 +1,18 @@
 ﻿@model Post
+@{
+    ViewBag.Title = "Create Post";
+}
 
-
-<div class="container">
-    <div class="left">
-        <partial name="_ToolsPartial" model="@Model.AppUser?.UserName" />
+<h1>Create Post</h1>
+<form method="post" enctype="multipart/form-data">
+    <input asp-for="Id" type="hidden" />
+    <div class="form-group">
+        <textarea style="max-height:200px; height:200px; background-color:black; color:white; resize:none"
+                  type="text" name="TextArea" maxlength="300" class="form-control" placeholder="Type some text!"
+                  autofocus required>@Model?.Text</textarea>
     </div>
-    <div class="middle">
-        <h1>Create Post</h1>
-        <form method="post" enctype="multipart/form-data">
-            <input asp-for="Id" type="hidden"/>
-            <div class="form-group">
-                <textarea style="max-height:200px; height:200px; background-color:black; color:white; resize:none"
-                          type="text" name="TextArea" maxlength="300" class="form-control" placeholder="Type some text!" 
-                          autofocus required>@Model?.Text</textarea>
-            </div>
-            <div class="d-inline">
-                <input class="mt-2 form-control form-control-sm" style="float:left; width:200px" type="file" accept="image/*" name="file" />
-                <button class="mt-2 btn btn-primary" style="float:right" type="submit">Post</button>
-            </div>
-        </form>
+    <div class="d-inline">
+        <input class="mt-2 form-control form-control-sm" style="float:left; width:200px" type="file" accept="image/*" name="file" />
+        <button class="mt-2 btn btn-primary" style="float:right" type="submit">Post</button>
     </div>
-    <div class="right">
-        <partial name="_FollowingPartial" />
-    </div>
-</div>
+</form>

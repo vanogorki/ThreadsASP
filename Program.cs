@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using ThreadsASP.Models;
-using SportsStore.Models;
 using ThreadsASP.FileUploadService;
+using ThreadsASP.Models.Repositories;
 
 namespace ThreadsASP
 {
@@ -17,9 +17,13 @@ namespace ThreadsASP
 
             builder.Services.AddControllersWithViews();
 
-            builder.Services.AddScoped<IPostsRepository, EFPostsRepository>();
+            builder.Services.AddScoped<IPostsRepository, PostsRepository>();
 
-            builder.Services.AddScoped<IFileUploadService, LocalFileUploadService>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+            builder.Services.AddScoped<IFollowsRepository, FollowsRepository>();
+
+            builder.Services.AddScoped<IFileService, LocalFileService>();
 
             builder.Services.AddDbContext<AppDbContext>(opts =>
                 opts.UseSqlServer(builder.Configuration["ConnectionStrings:AppConnection"]));

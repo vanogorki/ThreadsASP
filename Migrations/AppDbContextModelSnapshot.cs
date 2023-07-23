@@ -224,6 +224,21 @@ namespace ThreadsASP.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("ThreadsASP.Models.Follow", b =>
+                {
+                    b.Property<string>("FollowingUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("FollowerUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("FollowingUserId", "FollowerUserId");
+
+                    b.HasIndex("FollowerUserId");
+
+                    b.ToTable("Follows");
+                });
+
             modelBuilder.Entity("ThreadsASP.Models.Post", b =>
                 {
                     b.Property<long>("Id")
@@ -306,6 +321,23 @@ namespace ThreadsASP.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ThreadsASP.Models.Follow", b =>
+                {
+                    b.HasOne("ThreadsASP.Models.ApplicationUser", "FollowerUser")
+                        .WithMany("ReceiveFollows")
+                        .HasForeignKey("FollowerUserId")
+                        .IsRequired();
+
+                    b.HasOne("ThreadsASP.Models.ApplicationUser", "FollowingUser")
+                        .WithMany("SendFollows")
+                        .HasForeignKey("FollowingUserId")
+                        .IsRequired();
+
+                    b.Navigation("FollowerUser");
+
+                    b.Navigation("FollowingUser");
+                });
+
             modelBuilder.Entity("ThreadsASP.Models.Post", b =>
                 {
                     b.HasOne("ThreadsASP.Models.ApplicationUser", "AppUser")
@@ -320,6 +352,10 @@ namespace ThreadsASP.Migrations
             modelBuilder.Entity("ThreadsASP.Models.ApplicationUser", b =>
                 {
                     b.Navigation("Posts");
+
+                    b.Navigation("ReceiveFollows");
+
+                    b.Navigation("SendFollows");
                 });
 #pragma warning restore 612, 618
         }

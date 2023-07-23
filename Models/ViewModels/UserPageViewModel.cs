@@ -2,10 +2,10 @@
 
 namespace ThreadsASP.Models.ViewModels
 {
-    public class UserPostViewModel
+    public class UserPageViewModel
     {
-        public IEnumerable<Post> Posts { get; set; }
-            = Enumerable.Empty<Post>();
+        public List<Post> Posts { get; set; }
+        public bool IsFollowing { get; set; }
 
         public ApplicationUser? SelectedUser { get; set; }
 

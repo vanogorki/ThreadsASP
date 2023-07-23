@@ -1,4 +1,6 @@
-﻿<style>
+﻿@model List<Follow>
+
+<style>
     #rcorners2 {
         border-radius: 25px;
         background: #191970;
@@ -11,4 +13,14 @@
         class="bg-primary text-white text-center p-2">
         Following
     </h5>
+    @foreach (var f in Model ?? Enumerable.Empty<Follow>())
+    {
+        <div style="text-align:left;" class="m-2">
+            <a class="btn" href="/@f.FollowerUser.UserName">
+                <img class="d-inline" src="/images/@f.FollowerUser.ProfileImgName"
+                     style="overflow:hidden; border-radius:50%; max-height:50px; max-width:50px; height:50px; width:50px;" />
+            </a>
+            <a class="btn d-inline" href="/@f.FollowerUser.UserName"><strong style="color:white">@f.FollowerUser.UserName</strong></a>
+        </div>
+    }
 </div>

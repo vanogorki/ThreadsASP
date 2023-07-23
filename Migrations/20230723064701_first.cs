@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ThreadsASP.Migrations
 {
-    public partial class Threads : Migration
+    public partial class first : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -156,6 +156,28 @@ namespace ThreadsASP.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Follows",
+                columns: table => new
+                {
+                    FollowingUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    FollowerUserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Follows", x => new { x.FollowingUserId, x.FollowerUserId });
+                    table.ForeignKey(
+                        name: "FK_Follows_AspNetUsers_FollowerUserId",
+                        column: x => x.FollowerUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Follows_AspNetUsers_FollowingUserId",
+                        column: x => x.FollowingUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Posts",
                 columns: table => new
                 {
@@ -217,6 +239,11 @@ namespace ThreadsASP.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Follows_FollowerUserId",
+                table: "Follows",
+                column: "FollowerUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Posts_AppUserId",
                 table: "Posts",
                 column: "AppUserId");
@@ -238,6 +265,9 @@ namespace ThreadsASP.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "Follows");
 
             migrationBuilder.DropTable(
                 name: "Posts");

@@ -1,9 +1,9 @@
 ﻿namespace ThreadsASP.FileUploadService
 {
-    public class LocalFileUploadService : IFileUploadService
+    public class LocalFileService : IFileService
     {
         private readonly IWebHostEnvironment environment;
-        public LocalFileUploadService(IWebHostEnvironment environment)
+        public LocalFileService(IWebHostEnvironment environment)
         {
             this.environment = environment;
         }
@@ -12,6 +12,17 @@
             var filePath = Path.Combine(environment.ContentRootPath, @"wwwroot\images", file.FileName);
             using var fileStream = new FileStream(filePath, FileMode.Create);
             await file.CopyToAsync(fileStream); 
+        }
+        public static void DeleteImage(string? ImgName)
+        {
+            try
+            {
+                File.Delete(@$"wwwroot\images\{ImgName}");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
         }
     }
 }

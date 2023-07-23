@@ -1,13 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SportsStore.Models;
 
-namespace ThreadsASP.Models
+namespace ThreadsASP.Models.Repositories
 {
-    public class EFPostsRepository : IPostsRepository
+    public class PostsRepository : IPostsRepository
     {
         private AppDbContext context;
 
-        public EFPostsRepository(AppDbContext ctx)
+        public PostsRepository(AppDbContext ctx)
         {
             context = ctx;
         }
@@ -25,5 +24,8 @@ namespace ThreadsASP.Models
             context.Add(p);
             context.SaveChanges();
         }
+
+        public List<Post> GetUserPosts(string selectedUserId)
+            => context.Posts.Where(p => p.AppUserId == selectedUserId).OrderByDescending(i => i.Id).ToList();
     }
 }
