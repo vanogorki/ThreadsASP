@@ -26,7 +26,7 @@ namespace ThreadsASP.Controllers
             this.fileUploadService = fileUploadService;
             this.followsRepository = followsRepository;
         }
-        
+
 
         public async Task<IActionResult> Index()
         {
@@ -44,6 +44,18 @@ namespace ThreadsASP.Controllers
         {
             var currentUser = await userManager.GetUserAsync(User);
             return PartialView("_ToolsPartial", currentUser.UserName);
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> SearchUser(string searchString)
+        {
+            var searchUser = await userManager.Users.FirstOrDefaultAsync(x => x.UserName.Contains(searchString));
+            if (searchUser == null)
+            {
+                return RedirectToAction("Index");
+            }
+            return Redirect($"http://localhost:5000/{searchUser.UserName}");
         }
 
         public async Task<IActionResult> FollowingPartial()

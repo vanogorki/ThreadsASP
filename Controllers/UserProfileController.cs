@@ -55,7 +55,10 @@ namespace ThreadsASP.Controllers
             {
                 return NotFound();
             }
-            LocalFileService.DeleteImage(removePost.ImgName);
+            if (userManager.Users.FirstOrDefault(u => u.ProfileImgName == removePost.ImgName) == null)
+            {
+                LocalFileService.DeleteImage(removePost.ImgName);
+            }
             postsRepository.DeletePost(removePost);
             return Redirect($"http://localhost:5000/{accName}");
         }
@@ -78,7 +81,7 @@ namespace ThreadsASP.Controllers
             if (file != null)
             {
                 await fileUploadService.UploadFileAsync(file);
-                if (user.ProfileImgName != "Default.jpg")
+                if (user.ProfileImgName != "Default.jpg" && (postsRepository.Posts.FirstOrDefault(x => x.ImgName == user.ProfileImgName)) == null)
                 {
                     LocalFileService.DeleteImage(user.ProfileImgName);
                 }

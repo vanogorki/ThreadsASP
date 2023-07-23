@@ -8,12 +8,24 @@
     }
 </style>
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 <div id="rcorners2">
     <div>
-        <a href="/"><h5 style="border-radius: 10px; padding: 5px" class="bg-primary text-white text-center p-2">ThreadsASP</h5></a>
+        <a href="/"><h5 style="border-radius: 10px; padding: 5px" 
+            class="bg-primary text-white text-center p-2">ThreadsASP</h5></a>
     </div>
     <div class="m-4">
         <a class="btn btn-outline-primary" href="/">Home</a>
+    </div>
+    <div class="m-4">
+        <form method="post" asp-action="SearchUser" class="input-group">
+            <input type="text" style="background-color:black; color:white"
+                class="form-control form-control-sm mx-1" name="searchString" placeholder="Search" />
+            <button type="submit" class="btn btn-primary">
+                <i class="fa fa-search"></i>
+            </button>
+        </form>
     </div>
     <div class="m-4">
         <a class="btn btn-outline-primary" href="/@Model">Profile</a>
