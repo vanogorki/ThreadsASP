@@ -54,6 +54,11 @@ namespace ThreadsASP
 
             app.MapDefaultControllerRoute();
 
+            var context = app.Services.CreateScope().ServiceProvider
+                .GetRequiredService<AppDbContext>();
+
+            context.Database.Migrate();
+
             app.Run();
         }
     }

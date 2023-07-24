@@ -31,10 +31,10 @@ namespace ThreadsASP.Controllers
         public async Task<IActionResult> Index()
         {
             var currentUser = await userManager.GetUserAsync(User);
-            List<Follow> followingUsers = await followsRepository.Follows.Where(x => x.FollowingUserId == currentUser.Id).ToListAsync();
+            List<Follow>? follows = await followsRepository.Follows.Where(x => x.FollowingUserId == currentUser.Id).ToListAsync();
             return View(new HomeViewModel
             {
-                Posts = await postsRepository.Posts.Where(c => followingUsers.Select(
+                Posts = await postsRepository.Posts.Where(c => follows.Select(
                     s => s.FollowerUserId).Contains(c.AppUserId) || c.AppUserId == currentUser.Id).OrderByDescending(i => i.Id).ToListAsync(),
                 CurrentUser = currentUser
             });
@@ -58,15 +58,19 @@ namespace ThreadsASP.Controllers
             return Redirect($"http://localhost:5000/{searchUser.UserName}");
         }
 
-        public async Task<IActionResult> FollowingPartial()
+        public async Task<IActionResult> SuggestPartial()
         {
             var currentUser = await userManager.GetUserAsync(User);
-            List<Follow> followingUsers = await followsRepository.Follows.Where(x => x.FollowingUserId == currentUser.Id).ToListAsync();
-            return PartialView("_FollowingPartial", followingUsers);
+
+            List<ApplicationUser> suggestingUsers = await userManager.Users.Where(
+                s => s.Id != currentUser.Id && !followsRepository.Follows.Where(
+                    x => x.FollowingUserId == currentUser.Id).Select(d => d.FollowerUserId).Contains(s.Id)).ToListAsync();
+
+            return PartialView("_SuggestPartial", suggestingUsers);
         }
 
         [HttpGet("{action}")]
-        public  IActionResult CreatePost(Post p)
+        public IActionResult CreatePost(Post p)
         {
             if (p?.Id != null)
             {
@@ -75,7 +79,7 @@ namespace ThreadsASP.Controllers
             return View();
         }
 
-        
+
         [HttpPost("{action}")]
         public async Task<IActionResult> CreatePost(long? Id, string TextArea, IFormFile? file)
         {
@@ -99,7 +103,7 @@ namespace ThreadsASP.Controllers
             }
             return View();
         }
-       
+
 
         private async Task CreatePostMethod(string TextArea, IFormFile? file, string newFileName)
         {
