@@ -4,9 +4,10 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>@ViewBag.Title</title>
-    <link href="/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" type="text/css" />
-    <link href="/css/style.css" rel="stylesheet" type="text/css" />
-    
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+
     <style>
         body {
             background-color: black;
@@ -32,18 +33,6 @@
             text-align: center;
         }
     </style>
-    
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script type="text/jscript">
-        $(document).ready(function () {
-            $("#ToolsPartial").load('/home/ToolsPartial');
-        });
-
-        $(document).ready(function () {
-            $("#FollowingPartial").load('/home/FollowingPartial');
-        });
-    </script>
-
 </head>
 
 <body>
@@ -54,5 +43,20 @@
         </div>
         <div class="right" id="FollowingPartial"></div>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+
+    <script type="text/jscript">
+        $(document).ready(function () {
+            $("#ToolsPartial").load('/home/ToolsPartial');
+        });
+
+        $(document).ready(function () {
+            $("#FollowingPartial").load('/home/FollowingPartial');
+        });
+    </script>
+
 </body>
 </html>

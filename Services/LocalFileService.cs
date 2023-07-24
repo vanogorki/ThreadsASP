@@ -1,4 +1,6 @@
-﻿namespace ThreadsASP.FileUploadService
+﻿
+
+namespace ThreadsASP.FileUploadService
 {
     public class LocalFileService : IFileService
     {
@@ -7,12 +9,30 @@
         {
             this.environment = environment;
         }
-        public async Task UploadFileAsync(IFormFile file)
+        public async Task UploadPostImageAsync(IFormFile file, string newFileName)
         {
-            var filePath = Path.Combine(environment.ContentRootPath, @"wwwroot\images", file.FileName);
+            var filePath = Path.Combine(environment.ContentRootPath, @"wwwroot\images", newFileName);
             using var fileStream = new FileStream(filePath, FileMode.Create);
-            await file.CopyToAsync(fileStream); 
+            await file.CopyToAsync(fileStream);
         }
+
+        public void UploadProfileImage(IFormFile file, string newFileName)
+        {
+            try
+            {
+                using (var image = Image.Load(file.OpenReadStream()))
+                {
+                    var filePath = Path.Combine(environment.ContentRootPath, @"wwwroot\images", newFileName);
+                    image.Mutate(x => x.Resize(300, 300));
+                    image.Save(filePath);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+        }
+
         public static void DeleteImage(string? ImgName)
         {
             try

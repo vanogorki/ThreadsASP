@@ -5,6 +5,8 @@ using ThreadsASP.Models;
 using ThreadsASP.FileUploadService;
 using ThreadsASP.Models.Repositories;
 using Microsoft.AspNetCore.Authorization;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace ThreadsASP.Controllers
 {
@@ -42,7 +44,6 @@ namespace ThreadsASP.Controllers
                 Posts = postsRepository.GetUserPosts(selectedUser.Id),
                 IsFollowing = followsRepository.IsFollowing(currentUser.Id, selectedUser.Id),
                 SelectedUser = selectedUser,
-                CurrentUser = currentUser,
                 IsCurrentUser = (selectedUser == currentUser) ? true : false
             });
         }
@@ -74,22 +75,28 @@ namespace ThreadsASP.Controllers
             return RedirectToAction("CreatePost", "Home", editPost);
         }
 
+        public IActionResult CropImage()
+        {
+            return View();
+        }
+
         [HttpPost]
-        public async Task<IActionResult> SetProfilePicture(IFormFile? file)
+        public async Task<IActionResult> SetProfilePicture(IFormFile blob)
         {
             var user = await userManager.GetUserAsync(User);
-            if (file != null)
+            if (blob != null)
             {
-                await fileUploadService.UploadFileAsync(file);
+                var newFileName = Guid.NewGuid().ToString() + ".png";
+                fileUploadService.UploadProfileImage(blob, newFileName);
                 if (user.ProfileImgName != "Default.jpg" && (postsRepository.Posts.FirstOrDefault(x => x.ImgName == user.ProfileImgName)) == null)
                 {
                     LocalFileService.DeleteImage(user.ProfileImgName);
                 }
-                user.ProfileImgName = file.FileName;
+                user.ProfileImgName = newFileName;
                 userRepository.SaveNewProfilePicture();
-                return Redirect($"http://localhost:5000/{user.UserName}");
+                return Json(new { Message = $"http://localhost:5000/{user.UserName}" });
             }
-            return Redirect($"http://localhost:5000/{user.UserName}");
+            return Json(new { Message = $"http://localhost:5000/{user.UserName}" });
         }
 
         public async Task<IActionResult> Follow(string selectedUserId)

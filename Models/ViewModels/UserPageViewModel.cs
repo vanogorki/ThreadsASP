@@ -10,7 +10,5 @@ namespace ThreadsASP.Models.ViewModels
         public ApplicationUser? SelectedUser { get; set; }
 
         public bool? IsCurrentUser { get; set; }
-        
-        public ApplicationUser? CurrentUser { get; set; }
     }
 }
