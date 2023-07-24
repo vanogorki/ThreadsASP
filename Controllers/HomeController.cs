@@ -66,6 +66,8 @@ namespace ThreadsASP.Controllers
                 s => s.Id != currentUser.Id && !followsRepository.Follows.Where(
                     x => x.FollowingUserId == currentUser.Id).Select(d => d.FollowerUserId).Contains(s.Id)).ToListAsync();
 
+            Random rand = new Random();
+            suggestingUsers = suggestingUsers.OrderBy(_ => rand.Next()).Take(5).ToList();
             return PartialView("_SuggestPartial", suggestingUsers);
         }
 
