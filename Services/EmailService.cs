@@ -22,7 +22,6 @@ namespace ThreadsASP.Services
                 await client.ConnectAsync("smtp.gmail.com", 465, true);
                 await client.AuthenticateAsync("threadsasp@gmail.com", "eliwtipbvwaybvsq");
                 await client.SendAsync(emailMessage);
-
                 await client.DisconnectAsync(true);
             }
         }

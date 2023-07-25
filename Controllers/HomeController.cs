@@ -74,11 +74,11 @@ namespace ThreadsASP.Controllers
         }
 
         [HttpGet("{action}")]
-        public IActionResult CreatePost(Post p)
+        public IActionResult CreatePost(Post post)
         {
-            if (p?.Id != null)
+            if (post?.Id != null)
             {
-                return View(p);
+                return View(post);
             }
             return View();
         }
@@ -99,17 +99,17 @@ namespace ThreadsASP.Controllers
                 {
                     LocalFileService.DeleteImage(oldPost.ImgName);
                     postsRepository.DeletePost(oldPost);
-                    await CreatePostMethod(TextArea, file, newFileName);
+                    await CreatePostMethodAsync(TextArea, file, newFileName);
                     return RedirectToAction("Index");
                 }
-                await CreatePostMethod(TextArea, file, newFileName);
+                await CreatePostMethodAsync(TextArea, file, newFileName);
                 return RedirectToAction("Index");
             }
             return View();
         }
 
 
-        private async Task CreatePostMethod(string TextArea, IFormFile? file, string newFileName)
+        private async Task CreatePostMethodAsync(string TextArea, IFormFile? file, string newFileName)
         {
             var newPost = new Post()
             {
