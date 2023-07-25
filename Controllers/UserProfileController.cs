@@ -88,7 +88,7 @@ namespace ThreadsASP.Controllers
             {
                 var newFileName = Guid.NewGuid().ToString() + ".png";
                 fileUploadService.UploadProfileImage(blob, newFileName);
-                if (user.ProfileImgName != "Default.jpg" && (postsRepository.Posts.FirstOrDefault(x => x.ImgName == user.ProfileImgName)) == null)
+                if (user.ProfileImgName != "Default.jpg")
                 {
                     LocalFileService.DeleteImage(user.ProfileImgName);
                 }
