@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Identity;
 using ThreadsASP.Models;
 using ThreadsASP.FileUploadService;
 using ThreadsASP.Models.Repositories;
+using ThreadsASP.Services;
+using Microsoft.Extensions.FileSystemGlobbing.Internal.Patterns;
 
 namespace ThreadsASP
 {
@@ -25,11 +27,14 @@ namespace ThreadsASP
 
             builder.Services.AddScoped<IFileService, LocalFileService>();
 
+            builder.Services.AddScoped<EmailService>();
+
             builder.Services.AddDbContext<AppDbContext>(opts =>
                 opts.UseSqlServer(builder.Configuration["ConnectionStrings:AppConnection"]));
-            
+
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<AppDbContext>();
+                .AddEntityFrameworkStores<AppDbContext>()
+                .AddDefaultTokenProviders();
 
             builder.Services.Configure<IdentityOptions>(opts => {
                 opts.Password.RequiredLength = 6;
@@ -38,6 +43,7 @@ namespace ThreadsASP
                 opts.Password.RequireUppercase = false;
                 opts.Password.RequireDigit = false;
                 opts.User.RequireUniqueEmail = true;
+                opts.SignIn.RequireConfirmedEmail = true;
             });
 
             var app = builder.Build();

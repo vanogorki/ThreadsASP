@@ -1,4 +1,6 @@
 ﻿@page
+@using System.Web;
+@using ThreadsASP.Services;
 @model SignupModel
 @{
     ViewBag.Title = "Sign up";
@@ -10,17 +12,17 @@
     <div class="form-group">
         <label>Username</label>
         <input style="background-color:black; color:white"
-            name="UserName" class="form-control" value="@Model.UserName" />
+               name="UserName" class="form-control" value="@Model.UserName" />
     </div>
     <div class="form-group">
         <label>Email</label>
         <input style="background-color:black; color:white"
-            name="Email" class="form-control" value="@Model.Email" />
+               name="Email" class="form-control" value="@Model.Email" />
     </div>
     <div class="form-group">
         <label>Password</label>
         <input style="background-color:black; color:white"
-            name="Password" class="form-control" value="@Model.Password"
+               name="Password" class="form-control" value="@Model.Password"
                type="password" />
     </div>
     <div class="form-group">
@@ -72,7 +74,25 @@
                 await UserManager.CreateAsync(user, Password);
                 if (result.Succeeded)
                 {
-                    return RedirectToPage("Login");
+                    try
+                    {
+                        var code = await UserManager.GenerateEmailConfirmationTokenAsync(user);
+                        var callbackUrl = Url.Page(
+                            "ConfirmEmail",
+                            "OnGetAsync",
+                            new { code = code, userId = user.Id },
+                            protocol: HttpContext.Request.Scheme);
+                        EmailService emailService = new EmailService();
+                        await emailService.SendEmailAsync(Email, "Confirm your account",
+                            $"Please confirm your registration by clicking on the <a href='{callbackUrl}'>link</a>");
+
+                        return Content("Check your email to complete the registration");
+                    }
+                    catch (Exception)
+                    {
+                        ModelState.AddModelError("", "Invalid Email Address");
+                        return Page();
+                    }
                 }
                 foreach (IdentityError err in result.Errors)
                 {

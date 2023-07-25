@@ -1,5 +1,6 @@
 ﻿@page "{id}"
 @using Microsoft.AspNetCore.Authorization;
+@using ThreadsASP.Services;
 @model EditorModel
 @{
     ViewBag.Title = "Edit Profile";
@@ -47,7 +48,7 @@
     {
         private SignInManager<ApplicationUser> signInManager;
 
-        public UserManager<ApplicationUser> UserManager;
+        private UserManager<ApplicationUser> UserManager;
 
         public EditorModel(UserManager<ApplicationUser> usrManager, SignInManager<ApplicationUser> signInManager)
         {
@@ -88,6 +89,27 @@
             if (ModelState.IsValid)
             {
                 ApplicationUser user = await UserManager.FindByIdAsync(Id);
+                if (Email != user.Email)
+                {
+                    try
+                    {
+                        var code = await UserManager.GenerateEmailConfirmationTokenAsync(user);
+                        var callbackUrl = Url.Page(
+                            "ConfirmEmail",
+                            "OnGetAsync",
+                            new { code = code, userId = user.Id },
+                            protocol: HttpContext.Request.Scheme);
+                        EmailService emailService = new EmailService();
+                        await emailService.SendEmailAsync(Email, "Confirm your account",
+                            $"Please confirm your verification by clicking on the <a href='{callbackUrl}'>link</a>");
+                        user.EmailConfirmed = false;
+                    }
+                    catch (Exception)
+                    {
+                        ModelState.AddModelError("", "Invalid Email Address");
+                        return Page();
+                    }
+                }
                 user.UserName = UserName;
                 user.Email = Email;
                 IdentityResult result = await UserManager.UpdateAsync(user);

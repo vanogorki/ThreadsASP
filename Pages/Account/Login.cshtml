@@ -1,4 +1,5 @@
 ﻿@page
+@using Microsoft.AspNetCore.Authorization;
 @model LoginModel
 @{
     ViewBag.Title = "Log in";
@@ -27,12 +28,15 @@
     public class LoginModel : PageModel
     {
         private SignInManager<ApplicationUser> signInManager;
-        
-        public LoginModel(SignInManager<ApplicationUser> signinMgr)
+        private UserManager<ApplicationUser> UserManager;
+
+        public LoginModel(SignInManager<ApplicationUser> signinMgr,
+            UserManager<ApplicationUser> userManager)
         {
             signInManager = signinMgr;
+            UserManager = userManager;
         }
-        
+
         [BindProperty]
         public string UserName { get; set; } = string.Empty;
         
@@ -40,13 +44,25 @@
         public string Password { get; set; } = string.Empty;
         
         [BindProperty(SupportsGet = true)]
-        
         public string? ReturnUrl { get; set; }
-        
+
+
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> OnPostAsync()
         {
             if (ModelState.IsValid)
             {
+                var user = await UserManager.FindByNameAsync(UserName);
+                if (user != null)
+                {
+                    // проверяем, подтвержден ли email
+                    if (!await UserManager.IsEmailConfirmedAsync(user))
+                    {
+                        ModelState.AddModelError("", "You didn't verify your email");
+                        return Page();
+                    }
+                }
+
                 Microsoft.AspNetCore.Identity.SignInResult result =
                 await signInManager.PasswordSignInAsync(UserName, Password,
                 false, false);

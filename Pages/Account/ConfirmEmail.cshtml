@@ -1,0 +1,38 @@
+﻿@page
+@model ConfirmEmailModel
+@using Microsoft.AspNetCore.Authorization;
+
+
+
+@functions {
+    public class ConfirmEmailModel : PageModel
+    {
+        private UserManager<ApplicationUser> UserManager;
+
+        public ConfirmEmailModel(UserManager<ApplicationUser> usrManager)
+        {
+            UserManager = usrManager;
+        }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> OnGetAsync(string userId, string code)
+        {
+            if (userId == null || code == null)
+            {
+                return Content("Error");
+            }
+            var user = await UserManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return Content("Error");
+            }
+            var result = await UserManager.ConfirmEmailAsync(user, code);
+            if (result.Succeeded)
+                return RedirectToPage("Login");
+            else
+            {
+                return Content("Error");
+            }
+        }
+    }
+}
