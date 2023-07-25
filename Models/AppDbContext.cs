@@ -20,12 +20,6 @@ namespace ThreadsASP.Models
                 .HasForeignKey(p => p.AppUserId)
                 .IsRequired();
 
-            builder.Entity<ApplicationUser>()
-                .HasMany(x => x.Posts)
-                .WithOne(z => z.AppUser)
-                .HasForeignKey(z => z.AppUserId)
-                .IsRequired();
-
             builder.Entity<Follow>()
                 .HasKey(x => new { x.FollowingUserId, x.FollowerUserId });
 
@@ -43,7 +37,6 @@ namespace ThreadsASP.Models
         }
 
         public DbSet<Post> Posts { get; set; }
-        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         public DbSet<Follow> Follows { get; set; }
     }
 }

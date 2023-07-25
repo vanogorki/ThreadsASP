@@ -75,6 +75,7 @@ namespace ThreadsASP.Controllers
             return RedirectToAction("CreatePost", "Home", editPost);
         }
 
+        [HttpGet("{action}")]
         public IActionResult CropImage()
         {
             return View();

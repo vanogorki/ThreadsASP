@@ -12,8 +12,8 @@ using ThreadsASP.Models;
 namespace ThreadsASP.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230723064701_first")]
-    partial class first
+    [Migration("20230725175155_First")]
+    partial class First
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
