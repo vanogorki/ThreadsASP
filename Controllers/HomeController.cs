@@ -31,7 +31,7 @@ namespace ThreadsASP.Controllers
         public async Task<IActionResult> Index()
         {
             var currentUser = await userManager.GetUserAsync(User);
-            List<Follow>? follows = await followsRepository.Follows.Where(x => x.FollowingUserId == currentUser.Id).ToListAsync();
+            var follows = await followsRepository.Follows.Where(x => x.FollowingUserId == currentUser.Id).ToListAsync();
             return View(new HomeViewModel
             {
                 Posts = await postsRepository.Posts.Where(c => follows.Select(
@@ -47,26 +47,28 @@ namespace ThreadsASP.Controllers
         }
 
 
-        [HttpPost]
-        public async Task<IActionResult> SearchUser(string searchString)
+        [HttpPost("{action}")]
+        public async Task<IActionResult> SearchResult(string searchString)
         {
-            var searchUser = await userManager.Users.FirstOrDefaultAsync(x => x.UserName.Contains(searchString));
-            if (searchUser == null)
+            var searchUsers = await userManager.Users.Where(x => x.UserName.Contains(searchString)).Take(4).ToListAsync();
+            var searchPosts = await postsRepository.Posts.Where(x => x.Text.Contains(searchString)).Take(4).ToListAsync();
+            return View(new SearchResultViewModel
             {
-                return RedirectToAction("Index");
-            }
-            return Redirect($"http://localhost:5000/{searchUser.UserName}");
+                SearchUsers = searchUsers,
+                SearchPosts = searchPosts,
+                SearchString = searchString
+            });
         }
 
         public async Task<IActionResult> SuggestPartial()
         {
             var currentUser = await userManager.GetUserAsync(User);
 
-            List<ApplicationUser> suggestingUsers = await userManager.Users.Where(
+            var suggestingUsers = await userManager.Users.Where(
                 s => s.Id != currentUser.Id && !followsRepository.Follows.Where(
                     x => x.FollowingUserId == currentUser.Id).Select(d => d.FollowerUserId).Contains(s.Id)).ToListAsync();
 
-            Random rand = new Random();
+            var rand = new Random();
             suggestingUsers = suggestingUsers.OrderBy(_ => rand.Next()).Take(5).ToList();
             return PartialView("_SuggestPartial", suggestingUsers);
         }

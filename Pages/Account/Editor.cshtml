@@ -1,7 +1,9 @@
 ﻿@page "{id}"
 @using Microsoft.AspNetCore.Authorization;
 @model EditorModel
-
+@{
+    ViewBag.Title = "Edit Profile";
+}
 
 <h5 class="bg-warning text-white text-center p-2">Edit User</h5>
 
@@ -24,12 +26,17 @@
     </div>
     <div class="form-group">
         <label>New Password</label>
-        <input name="Password" class="form-control" value="@Model.Password"
+        <input name="Password" type="password" class="form-control" value="@Model.Password"
                style="background-color:black; color:white" />
+    </div>
+    <div class="form-group">
+        <label>Confirm New Password</label>
+        <input name="ConfirmPassword" type="password" class="form-control" value="@Model.ConfirmPassword"
+               style="background-color:black; color:white"  />
     </div>
     <div class="py-2">
         <button type="submit" class="btn btn-warning">Submit</button>
-        <a class="btn btn-secondary" asp-page="list">Back</a>
+        <a class="btn btn-secondary" href="/">Back</a>
     </div>
 </form>
 
@@ -61,6 +68,10 @@
         [BindProperty]
         public string? Password { get; set; }
 
+        [BindProperty]
+        [DataType(DataType.Password)]
+        public string? ConfirmPassword { get; set; }
+
         public async Task<IActionResult> OnGetAsync(string id)
         {
             ApplicationUser user = await UserManager.FindByIdAsync(id);
@@ -71,7 +82,7 @@
             Id = user.Id; UserName = user.UserName; Email = user.Email;
             return Page();
         }
-        
+
         public async Task<IActionResult> OnPostAsync()
         {
             if (ModelState.IsValid)
@@ -80,7 +91,12 @@
                 user.UserName = UserName;
                 user.Email = Email;
                 IdentityResult result = await UserManager.UpdateAsync(user);
-                if (result.Succeeded && !String.IsNullOrEmpty(Password))
+                if (Password != ConfirmPassword)
+                {
+                    ModelState.AddModelError("", "Passwords do not match");
+                    return Page();
+                }
+                if (result.Succeeded && !String.IsNullOrEmpty(Password) && !String.IsNullOrEmpty(ConfirmPassword))
                 {
                     await UserManager.RemovePasswordAsync(user);
                     result = await UserManager.AddPasswordAsync(user, Password);

@@ -1,0 +1,61 @@
+﻿@model SearchResultViewModel
+
+<style>
+    div.block {
+        width: 100%;
+        word-wrap: break-word;
+    }
+
+    #rcorners1 {
+        border-radius: 25px;
+        border: 2px solid grey;
+        padding: 20px;
+    }
+
+    #rcornersImage {
+        border-radius: 30px;
+        padding: 20px;
+    }
+</style>
+
+
+@if (Model.SearchPosts.Count() != 0 || Model.SearchUsers.Count() != 0)
+{
+    <h3>Search result for "@Model.SearchString"</h3>
+    @foreach (var f in Model.SearchUsers ?? Enumerable.Empty<ApplicationUser>())
+    {
+        <div style="text-align:left;" class="m-2">
+            <a class="btn" href="/@f.UserName">
+                <img class="d-inline" src="/images/@f.ProfileImgName"
+                     style="overflow:hidden; border-radius:50%; max-height:50px; max-width:50px; height:50px; width:50px;" />
+            </a>
+            <a class="btn d-inline" href="/@f.UserName"><strong style="color:white">@f.UserName</strong></a>
+        </div>
+    }
+    
+    <div class="m-5"></div>
+    
+    @foreach (var p in Model.SearchPosts ?? Enumerable.Empty<Post>())
+    {
+        <div style="text-align:left" class="block m-2" id="rcorners1">
+            <a href="/@p.AppUser?.UserName">
+                <img class="d-block" src="/images/@p.AppUser?.ProfileImgName"
+                     style="overflow:hidden; border-radius:50%; max-height:50px; max-width:50px; height:50px; width:50px;" />
+            </a>
+            <a class="link-info d-block" href="/@p.AppUser?.UserName"><strong>@p.AppUser?.UserName</strong></a>
+            <div>@p.Text</div>
+            @if (p.ImgName != null)
+            {
+                <div>
+                    <img style="max-height:400px; max-width:600px; height:100%; width:100%"
+                         id="rcornersImage" src="/images/@p.ImgName">
+                </div>
+            }
+            <div style="text-align:right">@p.Date</div>
+        </div>
+    }
+}
+else
+{
+    <h3>No results for "@Model.SearchString"</h3>
+}
