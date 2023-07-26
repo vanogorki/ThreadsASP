@@ -4,28 +4,28 @@ namespace ThreadsASP.Models.Repositories
 {
     public class PostsRepository : IPostsRepository
     {
-        private AppDbContext context;
+        private AppDbContext _context;
 
         public PostsRepository(AppDbContext ctx)
         {
-            context = ctx;
+            _context = ctx;
         }
 
-        public IQueryable<Post> Posts => context.Posts.Include(x => x.AppUser);
+        public IQueryable<Post> Posts => _context.Posts.Include(x => x.AppUser);
 
         public void DeletePost(Post p)
         {
-            context.Remove(p);
-            context.SaveChanges();
+            _context.Remove(p);
+            _context.SaveChanges();
         }
 
         public void CreatePost(Post p)
         {
-            context.Add(p);
-            context.SaveChanges();
+            _context.Add(p);
+            _context.SaveChanges();
         }
 
         public List<Post> GetUserPosts(string selectedUserId)
-            => context.Posts.Where(p => p.AppUserId == selectedUserId).OrderByDescending(i => i.Id).ToList();
+            => _context.Posts.Where(p => p.AppUserId == selectedUserId).OrderByDescending(i => i.Id).ToList();
     }
 }

@@ -4,14 +4,14 @@ namespace ThreadsASP.FileUploadService
 {
     public class LocalFileService : IFileService
     {
-        private readonly IWebHostEnvironment environment;
+        private readonly IWebHostEnvironment _environment;
         public LocalFileService(IWebHostEnvironment environment)
         {
-            this.environment = environment;
+            _environment = environment;
         }
         public async Task UploadPostImageAsync(IFormFile file, string newFileName)
         {
-            var filePath = Path.Combine(environment.ContentRootPath, @"wwwroot\images", newFileName);
+            var filePath = Path.Combine(_environment.ContentRootPath, @"wwwroot\images", newFileName);
             using var fileStream = new FileStream(filePath, FileMode.Create);
             await file.CopyToAsync(fileStream);
         }
@@ -22,7 +22,7 @@ namespace ThreadsASP.FileUploadService
             {
                 using (var image = Image.Load(file.OpenReadStream()))
                 {
-                    var filePath = Path.Combine(environment.ContentRootPath, @"wwwroot\images", newFileName);
+                    var filePath = Path.Combine(_environment.ContentRootPath, @"wwwroot\images", newFileName);
                     image.Mutate(x => x.Resize(300, 300));
                     image.Save(filePath);
                 }

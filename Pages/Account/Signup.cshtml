@@ -41,11 +41,11 @@
 @functions {
     public class SignupModel : PageModel
     {
-        private UserManager<ApplicationUser> UserManager;
+        private UserManager<ApplicationUser> _UserManager;
 
-        public SignupModel(UserManager<ApplicationUser> usrManager)
+        public SignupModel(UserManager<ApplicationUser> UserManager)
         {
-            UserManager = usrManager;
+            _UserManager = UserManager;
         }
 
         [BindProperty]
@@ -71,12 +71,12 @@
                 ApplicationUser user =
                 new ApplicationUser { UserName = UserName, Email = Email };
                 IdentityResult result =
-                await UserManager.CreateAsync(user, Password);
+                await _UserManager.CreateAsync(user, Password);
                 if (result.Succeeded)
                 {
                     try
                     {
-                        var code = await UserManager.GenerateEmailConfirmationTokenAsync(user);
+                        var code = await _UserManager.GenerateEmailConfirmationTokenAsync(user);
                         var callbackUrl = Url.Page(
                             "ConfirmEmail",
                             "OnGetAsync",

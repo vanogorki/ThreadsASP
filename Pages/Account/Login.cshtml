@@ -27,14 +27,14 @@
 @functions {
     public class LoginModel : PageModel
     {
-        private SignInManager<ApplicationUser> signInManager;
-        private UserManager<ApplicationUser> UserManager;
+        private SignInManager<ApplicationUser> _signInManager;
+        private UserManager<ApplicationUser> _UserManager;
 
-        public LoginModel(SignInManager<ApplicationUser> signinMgr,
-            UserManager<ApplicationUser> userManager)
+        public LoginModel(SignInManager<ApplicationUser> signInManager,
+            UserManager<ApplicationUser> UserManager)
         {
-            signInManager = signinMgr;
-            UserManager = userManager;
+            _signInManager = signInManager;
+            _UserManager = UserManager;
         }
 
         [BindProperty]
@@ -52,11 +52,11 @@
         {
             if (ModelState.IsValid)
             {
-                var user = await UserManager.FindByNameAsync(UserName);
+                var user = await _UserManager.FindByNameAsync(UserName);
                 if (user != null)
                 {
                     // проверяем, подтвержден ли email
-                    if (!await UserManager.IsEmailConfirmedAsync(user))
+                    if (!await _UserManager.IsEmailConfirmedAsync(user))
                     {
                         ModelState.AddModelError("", "You didn't verify your email");
                         return Page();
@@ -64,7 +64,7 @@
                 }
 
                 Microsoft.AspNetCore.Identity.SignInResult result =
-                await signInManager.PasswordSignInAsync(UserName, Password,
+                await _signInManager.PasswordSignInAsync(UserName, Password,
                 false, false);
                 if (result.Succeeded)
                 {

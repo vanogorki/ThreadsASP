@@ -13,28 +13,28 @@ namespace ThreadsASP.Controllers
     [Authorize]
     public class HomeController : Controller
     {
-        private IPostsRepository postsRepository;
-        private UserManager<ApplicationUser> userManager;
-        private readonly IFileService fileUploadService;
-        private IFollowsRepository followsRepository;
+        private IPostsRepository _postsRepository;
+        private UserManager<ApplicationUser> _userManager;
+        private readonly IFileService _fileUploadService;
+        private IFollowsRepository _followsRepository;
 
         public HomeController(UserManager<ApplicationUser> userManager,
             IPostsRepository postsRepository, IFileService fileUploadService, IFollowsRepository followsRepository)
         {
-            this.postsRepository = postsRepository;
-            this.userManager = userManager;
-            this.fileUploadService = fileUploadService;
-            this.followsRepository = followsRepository;
+            _postsRepository = postsRepository;
+            _userManager = userManager;
+            _fileUploadService = fileUploadService;
+            _followsRepository = followsRepository;
         }
 
 
         public async Task<IActionResult> Index()
         {
-            var currentUser = await userManager.GetUserAsync(User);
-            var follows = await followsRepository.Follows.Where(x => x.FollowingUserId == currentUser.Id).ToListAsync();
+            var currentUser = await _userManager.GetUserAsync(User);
+            var follows = await _followsRepository.Follows.Where(x => x.FollowingUserId == currentUser.Id).ToListAsync();
             return View(new HomeViewModel
             {
-                Posts = await postsRepository.Posts.Where(c => follows.Select(
+                Posts = await _postsRepository.Posts.Where(c => follows.Select(
                     s => s.FollowerUserId).Contains(c.AppUserId) || c.AppUserId == currentUser.Id).OrderByDescending(i => i.Id).ToListAsync(),
                 CurrentUser = currentUser
             });
@@ -42,7 +42,7 @@ namespace ThreadsASP.Controllers
 
         public async Task<IActionResult> ToolsPartial()
         {
-            var currentUser = await userManager.GetUserAsync(User);
+            var currentUser = await _userManager.GetUserAsync(User);
             return PartialView("_ToolsPartial", currentUser.UserName);
         }
 
@@ -50,8 +50,8 @@ namespace ThreadsASP.Controllers
         [HttpPost("{action}")]
         public async Task<IActionResult> SearchResult(string searchString)
         {
-            var searchUsers = await userManager.Users.Where(x => x.UserName.Contains(searchString)).Take(4).ToListAsync();
-            var searchPosts = await postsRepository.Posts.Where(x => x.Text.Contains(searchString)).Take(4).ToListAsync();
+            var searchUsers = await _userManager.Users.Where(x => x.UserName.Contains(searchString)).Take(4).ToListAsync();
+            var searchPosts = await _postsRepository.Posts.Where(x => x.Text.Contains(searchString)).Take(4).ToListAsync();
             return View(new SearchResultViewModel
             {
                 SearchUsers = searchUsers,
@@ -62,10 +62,10 @@ namespace ThreadsASP.Controllers
 
         public async Task<IActionResult> SuggestPartial()
         {
-            var currentUser = await userManager.GetUserAsync(User);
+            var currentUser = await _userManager.GetUserAsync(User);
 
-            var suggestingUsers = await userManager.Users.Where(
-                s => s.Id != currentUser.Id && !followsRepository.Follows.Where(
+            var suggestingUsers = await _userManager.Users.Where(
+                s => s.Id != currentUser.Id && !_followsRepository.Follows.Where(
                     x => x.FollowingUserId == currentUser.Id).Select(d => d.FollowerUserId).Contains(s.Id)).ToListAsync();
 
             var rand = new Random();
@@ -92,13 +92,13 @@ namespace ThreadsASP.Controllers
                 var newFileName = Guid.NewGuid().ToString() + ".png";
                 if (file != null)
                 {
-                    await fileUploadService.UploadPostImageAsync(file, newFileName);
+                    await _fileUploadService.UploadPostImageAsync(file, newFileName);
                 }
-                var oldPost = postsRepository.Posts.FirstOrDefault(p => p.Id == Id);
+                var oldPost = _postsRepository.Posts.FirstOrDefault(p => p.Id == Id);
                 if (oldPost != null)
                 {
                     LocalFileService.DeleteImage(oldPost.ImgName);
-                    postsRepository.DeletePost(oldPost);
+                    _postsRepository.DeletePost(oldPost);
                     await CreatePostMethodAsync(TextArea, file, newFileName);
                     return RedirectToAction("Index");
                 }
@@ -113,12 +113,12 @@ namespace ThreadsASP.Controllers
         {
             var newPost = new Post()
             {
-                AppUser = await userManager.GetUserAsync(User),
+                AppUser = await _userManager.GetUserAsync(User),
                 Text = TextArea,
                 Date = DateTime.Now.ToString("dd-MM-yyyy"),
                 ImgName = (file != null) ? newFileName : null
             };
-            postsRepository.CreatePost(newPost);
+            _postsRepository.CreatePost(newPost);
         }
     }
 }

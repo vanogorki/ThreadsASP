@@ -4,13 +4,13 @@ namespace ThreadsASP.Models
 {
     public class FollowsRepository : IFollowsRepository
     {
-        private AppDbContext context;
+        private AppDbContext _context;
 
         public FollowsRepository(AppDbContext ctx)
         {
-            context = ctx;
+            _context = ctx;
         }
-        public IQueryable<Follow> Follows => context.Follows.Include(x => x.FollowingUser).Include(x => x.FollowerUser);
+        public IQueryable<Follow> Follows => _context.Follows.Include(x => x.FollowingUser).Include(x => x.FollowerUser);
 
         public void Follow(ApplicationUser currentUser, ApplicationUser selectedUser)
         {
@@ -21,17 +21,17 @@ namespace ThreadsASP.Models
                 FollowerUser = selectedUser,
                 FollowerUserId = selectedUser.Id
             };
-            context.Add(newFollow);
-            context.SaveChanges();
+            _context.Add(newFollow);
+            _context.SaveChanges();
         }
 
         public void UnFollow(Follow f)
         {
-            context.Remove(f);
-            context.SaveChanges();
+            _context.Remove(f);
+            _context.SaveChanges();
         }
 
         public bool IsFollowing(string currentUserId, string selectedUserId)
-            => (context.Follows.FirstOrDefault(x => x.FollowingUserId == currentUserId && x.FollowerUserId == selectedUserId) != null) ? true : false;
+            => (_context.Follows.FirstOrDefault(x => x.FollowingUserId == currentUserId && x.FollowerUserId == selectedUserId) != null) ? true : false;
     }
 }

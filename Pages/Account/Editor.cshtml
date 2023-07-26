@@ -46,14 +46,14 @@
     [Authorize]
     public class EditorModel : PageModel
     {
-        private SignInManager<ApplicationUser> signInManager;
+        private SignInManager<ApplicationUser> _signInManager;
 
-        private UserManager<ApplicationUser> UserManager;
+        private UserManager<ApplicationUser> _UserManager;
 
-        public EditorModel(UserManager<ApplicationUser> usrManager, SignInManager<ApplicationUser> signInManager)
+        public EditorModel(UserManager<ApplicationUser> UserManager, SignInManager<ApplicationUser> signInManager)
         {
-            this.signInManager = signInManager;
-            UserManager = usrManager;
+            _signInManager = signInManager;
+            _UserManager = UserManager;
         }
 
         [BindProperty]
@@ -75,7 +75,7 @@
 
         public async Task<IActionResult> OnGetAsync(string id)
         {
-            ApplicationUser user = await UserManager.FindByIdAsync(id);
+            ApplicationUser user = await _UserManager.FindByIdAsync(id);
             if (user.UserName != User.Identity?.Name)
             {
                 return NotFound();
@@ -88,12 +88,12 @@
         {
             if (ModelState.IsValid)
             {
-                ApplicationUser user = await UserManager.FindByIdAsync(Id);
+                ApplicationUser user = await _UserManager.FindByIdAsync(Id);
                 if (Email != user.Email)
                 {
                     try
                     {
-                        var code = await UserManager.GenerateEmailConfirmationTokenAsync(user);
+                        var code = await _UserManager.GenerateEmailConfirmationTokenAsync(user);
                         var callbackUrl = Url.Page(
                             "ConfirmEmail",
                             "OnGetAsync",
@@ -112,7 +112,7 @@
                 }
                 user.UserName = UserName;
                 user.Email = Email;
-                IdentityResult result = await UserManager.UpdateAsync(user);
+                IdentityResult result = await _UserManager.UpdateAsync(user);
                 if (Password != ConfirmPassword)
                 {
                     ModelState.AddModelError("", "Passwords do not match");
@@ -120,12 +120,12 @@
                 }
                 if (result.Succeeded && !String.IsNullOrEmpty(Password) && !String.IsNullOrEmpty(ConfirmPassword))
                 {
-                    await UserManager.RemovePasswordAsync(user);
-                    result = await UserManager.AddPasswordAsync(user, Password);
+                    await _UserManager.RemovePasswordAsync(user);
+                    result = await _UserManager.AddPasswordAsync(user, Password);
                 }
                 if (result.Succeeded)
                 {
-                    await signInManager.SignOutAsync();
+                    await _signInManager.SignOutAsync();
                     return RedirectToPage("Login");
                 }
                 foreach (IdentityError err in result.Errors)

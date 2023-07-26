@@ -15,16 +15,16 @@
 @functions {
     public class LogoutModel : PageModel
     {
-        private SignInManager<ApplicationUser> signInManager;
+        private SignInManager<ApplicationUser> _signInManager;
         
-        public LogoutModel(SignInManager<ApplicationUser> signInMgr)
+        public LogoutModel(SignInManager<ApplicationUser> signInManager)
         {
-            signInManager = signInMgr;
+            _signInManager = signInManager;
         }
         
         public async Task OnGetAsync()
         {
-            await signInManager.SignOutAsync();
+            await _signInManager.SignOutAsync();
         }
     }
 }

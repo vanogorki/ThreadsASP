@@ -2,16 +2,16 @@
 {
     public class UserRepository : IUserRepository
     {
-        private AppDbContext context;
+        private AppDbContext _context;
 
         public UserRepository(AppDbContext ctx)
         {
-            context = ctx;
+            _context = ctx;
         }
 
         public void SaveNewProfilePicture()
         {
-            context.SaveChanges();
+            _context.SaveChanges();
         }
     }
 }

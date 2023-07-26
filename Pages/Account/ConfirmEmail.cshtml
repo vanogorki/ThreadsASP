@@ -7,11 +7,11 @@
 @functions {
     public class ConfirmEmailModel : PageModel
     {
-        private UserManager<ApplicationUser> UserManager;
+        private UserManager<ApplicationUser> _UserManager;
 
         public ConfirmEmailModel(UserManager<ApplicationUser> usrManager)
         {
-            UserManager = usrManager;
+            _UserManager = usrManager;
         }
 
         [AllowAnonymous]
@@ -21,12 +21,12 @@
             {
                 return Content("Error");
             }
-            var user = await UserManager.FindByIdAsync(userId);
+            var user = await _UserManager.FindByIdAsync(userId);
             if (user == null)
             {
                 return Content("Error");
             }
-            var result = await UserManager.ConfirmEmailAsync(user, code);
+            var result = await _UserManager.ConfirmEmailAsync(user, code);
             if (result.Succeeded)
                 return RedirectToPage("Login");
             else
