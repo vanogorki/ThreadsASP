@@ -84,7 +84,7 @@
                             protocol: HttpContext.Request.Scheme);
                         EmailService emailService = new EmailService();
                         await emailService.SendEmailAsync(Email, "Confirm your account",
-                            $"Please confirm your registration by clicking on the <a href='{callbackUrl}'>link</a>");
+                            $"Please confirm your account registration by clicking on the <a href='{callbackUrl}'>link</a>");
 
                         return Content("Check your email to complete the registration");
                     }

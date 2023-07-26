@@ -101,7 +101,7 @@
                             protocol: HttpContext.Request.Scheme);
                         EmailService emailService = new EmailService();
                         await emailService.SendEmailAsync(Email, "Confirm your account",
-                            $"Please confirm your verification by clicking on the <a href='{callbackUrl}'>link</a>");
+                            $"Please confirm your account verification by clicking on the <a href='{callbackUrl}'>link</a>");
                         user.EmailConfirmed = false;
                     }
                     catch (Exception)

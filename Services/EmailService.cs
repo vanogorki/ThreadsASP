@@ -20,7 +20,7 @@ namespace ThreadsASP.Services
             using (var client = new SmtpClient())
             {
                 await client.ConnectAsync("smtp.gmail.com", 465, true);
-                await client.AuthenticateAsync("threadsasp@gmail.com", "efrleyxoylrydyfv"); 
+                await client.AuthenticateAsync("threadsasp@gmail.com", "tnypwavwkocthlsl"); 
                 await client.SendAsync(emailMessage);
                 await client.DisconnectAsync(true);
             }
