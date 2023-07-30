@@ -9,7 +9,7 @@
             _context = ctx;
         }
 
-        public void SaveNewProfilePicture()
+        public void SaveNewProfileData()
         {
             _context.SaveChanges();
         }

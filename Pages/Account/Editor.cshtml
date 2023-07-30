@@ -1,45 +1,26 @@
 ﻿@page "{id}"
-@using Microsoft.AspNetCore.Authorization;
-@using ThreadsASP.Services;
 @model EditorModel
 @{
     ViewBag.Title = "Edit Profile";
 }
+<div class="container">
+    <h2>Edit Profile</h2>
+    <div class="validation" asp-validation-summary="All"></div>
 
-<h5 class="bg-warning text-white text-center p-2">Edit User</h5>
+    <form method="post">
+        <input name="Id" type="hidden" value="@Model.Id" />
+        <input name="UserName" placeholder="Username" value="@Model.UserName" />
+        <input name="FirstName" placeholder="First Name" value="@Model.FirstName" />
+        <input name="LastName" placeholder="LastName" value="@Model.LastName" />
+        <input name="Email" placeholder="Email" value="@Model.Email" />
+        <input name="Password" placeholder="New Password" type="password" value="@Model.Password" />
+        <input name="ConfirmPassword" placeholder="Confirm New Password" type="password" value="@Model.ConfirmPassword" />
+        <button class="login-btn" type="submit">Save</button>
+    </form>
+    <a class="back-link" href="/">Back</a>
+</div>
 
 
-<form method="post">
-    <div asp-validation-summary="All" class="text-danger"></div>
-    <div class="form-group">
-        <input name="Id" type="hidden" value="@Model.Id"
-               style="background-color:black; color:white" />
-    </div>
-    <div class="form-group">
-        <label>User Name</label>
-        <input name="UserName" class="form-control" value="@Model.UserName"
-               style="background-color:black; color:white" />
-    </div>
-    <div class="form-group">
-        <label>Email</label>
-        <input name="Email" class="form-control" value="@Model.Email"
-               style="background-color:black; color:white" />
-    </div>
-    <div class="form-group">
-        <label>New Password</label>
-        <input name="Password" type="password" class="form-control" value="@Model.Password"
-               style="background-color:black; color:white" />
-    </div>
-    <div class="form-group">
-        <label>Confirm New Password</label>
-        <input name="ConfirmPassword" type="password" class="form-control" value="@Model.ConfirmPassword"
-               style="background-color:black; color:white"  />
-    </div>
-    <div class="py-2">
-        <button type="submit" class="btn btn-warning">Submit</button>
-        <a class="btn btn-secondary" href="/">Back</a>
-    </div>
-</form>
 
 
 @functions {
@@ -63,6 +44,16 @@
         public string UserName { get; set; } = string.Empty;
 
         [BindProperty]
+        [Required]
+        [MaxLength(12, ErrorMessage = "First Name is too long")]
+        public string FirstName { get; set; } = string.Empty;
+
+        [BindProperty]
+        [Required]
+        [MaxLength(12, ErrorMessage = "Last Name is too long")]
+        public string LastName { get; set; } = string.Empty;
+
+        [BindProperty]
         [EmailAddress]
         public string Email { get; set; } = string.Empty;
 
@@ -80,7 +71,8 @@
             {
                 return NotFound();
             }
-            Id = user.Id; UserName = user.UserName; Email = user.Email;
+            Id = user.Id; UserName = user.UserName;
+            FirstName = user.FirstName; LastName = user.LastName; Email = user.Email;
             return Page();
         }
 
@@ -112,6 +104,8 @@
                 }
                 user.UserName = UserName;
                 user.Email = Email;
+                user.FirstName = FirstName;
+                user.LastName = LastName;
                 IdentityResult result = await _UserManager.UpdateAsync(user);
                 if (Password != ConfirmPassword)
                 {

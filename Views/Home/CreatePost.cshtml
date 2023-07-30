@@ -3,16 +3,27 @@
     ViewBag.Title = "Create Post";
 }
 
-<h1>Create Post</h1>
-<form method="post" enctype="multipart/form-data">
-    <input asp-for="Id" type="hidden" />
-    <div class="form-group">
-        <textarea style="max-height:200px; height:200px; background-color:black; color:white; resize:none"
-                  type="text" name="TextArea" maxlength="300" class="form-control" placeholder="Type some text!"
-                  autofocus required>@Model?.Text</textarea>
+<div class="main-body__border">
+    <div class="page-header">
+        <h2>Bweep!</h2>
     </div>
-    <div class="d-inline">
-        <input class="mt-2 form-control form-control-sm" style="float:left; width:200px" type="file" accept="image/*" name="file" />
-        <button class="mt-2 btn btn-primary" style="float:right" type="submit">Post</button>
+
+    <div class="bweep-box">
+        <form method="post" enctype="multipart/form-data">
+            <div class="user-input">
+                <img src="/images/@Model.AppUser?.ProfileImgName" />
+                <textarea type="text" placeholder="What is happening?!" required maxlength="300"
+                          name="TextArea" autofocus>@Model?.Text</textarea>
+            </div>
+
+            <div style="display: flex">
+                <span class="material-symbols-outlined image-icon">
+                    image
+                    <input type="file" accept="image/*" name="file" />
+                </span>
+
+                <button type="submit" class="bweep-button">Bweep</button>
+            </div>
+        </form>
     </div>
-</form>
+</div>

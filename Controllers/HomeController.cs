@@ -39,28 +39,15 @@ namespace ThreadsASP.Controllers
                 CurrentUser = currentUser
             });
         }
+        
 
-        public async Task<IActionResult> ToolsPartial()
+        public async Task<IActionResult> SideBarPartial()
         {
             var currentUser = await _userManager.GetUserAsync(User);
-            return PartialView("_ToolsPartial", currentUser.UserName);
+            return PartialView("_SideBarPartial", currentUser.UserName);
         }
 
-
-        [HttpPost("{action}")]
-        public async Task<IActionResult> SearchResult(string searchString)
-        {
-            var searchUsers = await _userManager.Users.Where(x => x.UserName.Contains(searchString)).Take(4).ToListAsync();
-            var searchPosts = await _postsRepository.Posts.Where(x => x.Text.Contains(searchString)).Take(4).ToListAsync();
-            return View(new SearchResultViewModel
-            {
-                SearchUsers = searchUsers,
-                SearchPosts = searchPosts,
-                SearchString = searchString
-            });
-        }
-
-        public async Task<IActionResult> SuggestPartial()
+        public async Task<IActionResult> SearchBarPartial()
         {
             var currentUser = await _userManager.GetUserAsync(User);
 
@@ -70,17 +57,44 @@ namespace ThreadsASP.Controllers
 
             var rand = new Random();
             suggestingUsers = suggestingUsers.OrderBy(_ => rand.Next()).Take(5).ToList();
-            return PartialView("_SuggestPartial", suggestingUsers);
+            return PartialView("_SearchBarPartial", suggestingUsers);
         }
 
+
         [HttpGet("{action}")]
-        public IActionResult CreatePost(Post post)
+        public async Task<IActionResult> SearchResult(string searchString)
         {
-            if (post?.Id != null)
+            var currentUser = await _userManager.GetUserAsync(User);
+            var currentUserFollows = await _followsRepository.Follows.Where(x => x.FollowingUserId == currentUser.Id).ToListAsync();
+
+            var searchUsers = await _userManager.Users.Where(x => x.UserName.Contains(searchString) || 
+                x.FirstName.Contains(searchString) || x.LastName.Contains(searchString)).Take(5).ToListAsync();
+
+            var searchPosts = await _postsRepository.Posts.Where(x => x.Text.Contains(searchString)).Take(5).ToListAsync();
+            return View(new SearchResultViewModel
             {
+                SearchUsers = searchUsers,
+                SearchPosts = searchPosts,
+                SearchString = searchString,
+                CurrentUserId = currentUser.Id,
+                CurrentUserFollows = currentUserFollows
+            });
+        }
+        
+
+        [HttpGet("{action}")]
+        public async Task<IActionResult> CreatePost(Post post)
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (post?.Id != 0 && post.AppUserId == currentUser.Id)
+            {
+                post.AppUser = currentUser;
                 return View(post);
             }
-            return View();
+            return View(new Post
+            {
+                AppUser = currentUser
+            });
         }
 
 
@@ -115,7 +129,7 @@ namespace ThreadsASP.Controllers
             {
                 AppUser = await _userManager.GetUserAsync(User),
                 Text = TextArea,
-                Date = DateTime.Now.ToString("dd-MM-yyyy"),
+                Date = DateTime.Now.ToString("MMMM dd"),
                 ImgName = (file != null) ? newFileName : null
             };
             _postsRepository.CreatePost(newPost);

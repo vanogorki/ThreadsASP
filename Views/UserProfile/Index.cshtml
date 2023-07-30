@@ -3,85 +3,100 @@
     ViewBag.Title = $"{Model.SelectedUser?.UserName}";
 }
 
-
-
-<style>
-    div.block {
-        width: 100%;
-        word-wrap: break-word;
-    }
-
-    #rcorners1 {
-        border-radius: 25px;
-        border: 2px solid grey;
-        padding: 20px;
-    }
-
-    #rcornersImage {
-        border-radius: 30px;
-        padding: 20px;
-    }
-</style>
-
-
-<div style="display:flex; height:200px">
-    <div style="width:200px; flex:1;">
-        <img src="/images/@Model.SelectedUser?.ProfileImgName"
-             style="max-height:125px; max-width:125px; height:100%; width:100%; border-radius:50%;" />
-        <h1>@Model.SelectedUser?.UserName</h1>
+<div class="main-body__border">
+    <div class="profile-header">
+        <h2>
+            @Model.SelectedUser?.FirstName @Model.SelectedUser?.LastName
+            <span class="material-symbols-outlined verified-icon">
+                verified
+            </span>
+            <br />
+            <span class="bweeps-count">@((Model.SelectedUser.Posts != null) ? Model.SelectedUser.Posts.Count() : "0") Bweeps</span>
+        </h2>
     </div>
-    <div style="flex:2;">
-        @if (Model?.IsCurrentUser == true)
-        {
-            <a class="mt-2 btn btn-outline-primary d-block" asp-action="CropImage">Change Profile Image</a>
-            <a class="mt-2 btn btn-outline-primary d-block" href="/Account/Editor/@Model.SelectedUser?.Id">Edit Profile</a>
-        }
-        else
-        {
-            @if (!Model.IsFollowing)
+
+    <div class="profile-info">
+        <div style="display: flex">
+            <img src="/images/@Model.SelectedUser?.ProfileImgName"
+                 onclick="window.open('@((Model.IsCurrentUser == true) ? "/CropImage" : $"/images/{Model.SelectedUser.ProfileImgName}")', '_blank')" />
+
+            @if (Model.IsCurrentUser == true)
             {
-                <form method="post">
-                    <input type="hidden" name="selectedUserId" value="@Model.SelectedUser?.Id" />
-                    <button class="mt-2 btn btn-outline-primary" style="float:left" asp-action="Follow">Follow</button>
-                </form>
+                <button onclick="location.href='/Account/Editor/@Model.SelectedUser?.Id';"
+                class="edit-btn">Edit profile</button>
             }
             else
             {
-                <form method="post">
-                    <input type="hidden" name="selectedUserId" value="@Model.SelectedUser?.Id" />
-                    <button class="mt-2 btn btn-outline-primary" style="float:left" asp-action="UnFollow">Unfollow</button>
-                </form>
+                @if (!Model.IsFollowing)
+                {
+                    <form method="post">
+                        <input type="hidden" id="selectedUserId" value="@Model.SelectedUser?.Id" />
+                        <button class="follow-btn" onclick="followUser(event);">Follow</button>
+                    </form>
+                }
+                else
+                {
+                    <form method="post">
+                        <input type="hidden" id="selectedUserId" value="@Model.SelectedUser?.Id" />
+                        <button class="unfollow-btn" onclick="unfollowUser(event);">Following</button>
+                    </form>
+                }
             }
-        }
+        </div>
+        <div>
+            <h2>
+                @Model.SelectedUser?.FirstName @Model.SelectedUser?.LastName
+                <span class="material-symbols-outlined verified-icon">
+                    verified
+                </span>
+                <br />
+                <span class="username">@@@Model.SelectedUser?.UserName</span>
+                <br />
+                <span class="follows-count">
+                    @((Model.FollowingCount != null) ? Model.FollowingCount : "0")  Following
+                    &emsp; @((Model.FollowersCount != null) ? Model.FollowersCount : "0") Followers
+                </span>
+            </h2>
+        </div>
     </div>
-</div>
 
-@foreach (var p in Model?.Posts ?? Enumerable.Empty<Post>())
-{
-    <div style="text-align:left" class="block m-2" id="rcorners1">
-        <a href="/@p.AppUser?.UserName">
-            <img class="d-block" src="/images/@p.AppUser?.ProfileImgName"
-                 style="overflow:hidden; border-radius:50%; max-height:50px; max-width:50px; height:50px; width:50px;" />
-        </a>
-        <a class="link-info d-block" href="/@p.AppUser?.UserName"><strong>@p.AppUser?.UserName</strong></a>
-        <div>@p.Text</div>
-        @if (p.ImgName != null)
-        {
-            <div>
-                <img style="max-height:400px; max-width:600px; height:100%; width:100%" id="rcornersImage" src="/images/@p.ImgName">
+    @foreach (var p in Model?.Posts ?? Enumerable.Empty<Post>())
+    {
+        <div class="post">
+            <div class="avatar" onclick="location.href='/@p.AppUser.UserName';">
+                <img src="/images/@p.AppUser.ProfileImgName" />
             </div>
-        }
-        <form class="d-inline" method="post" style="visibility:@(Model?.IsCurrentUser == true ? "visible" : "hidden")">
-            <input name="Id" value="@p.Id" type="hidden" />
-            <input name="accName" value="@p.AppUser?.UserName" type="hidden" />
-            <button type="submit" class="btn btn-outline-danger btn-sm mt-2" asp-action="DeletePost">
-                Delete
-            </button>
-            <button type="submit" class="btn btn-outline-warning btn-sm mt-2" asp-action="EditPost">
-                Edit
-            </button>
-        </form>
-        <div class="d-inline" style="float:right">@p.Date</div>
-    </div>
-}
 
+            <div class="body">
+                <div class="header">
+                    <div class="user" onclick="location.href='/@p.AppUser.UserName';">
+                        <h3 class="full-name">@p.AppUser.FirstName @p.AppUser.LastName</h3>
+                        <span class="material-symbols-outlined verified-icon">
+                            verified
+                        </span>
+                        <p class="username-date">@@@p.AppUser.UserName · @p.Date<p />
+                    </div>
+                    <div class="text">
+                        <p>@p.Text</p>
+                    </div>
+                </div>
+
+                @if (p.ImgName != null)
+                {
+                    <img onclick="window.open('/images/@p.ImgName', '_blank')" src="/images/@p.ImgName" />
+                }
+
+                <form method="post" class="footer" style="display: @(Model?.IsCurrentUser == true ? "flex" : "none")">
+                    <input name="Id" value="@p.Id" type="hidden" />
+                    <input name="accName" value="@p.AppUser?.UserName" type="hidden" />
+                    <button type="submit" asp-action="EditPost" class="material-symbols-outlined edit-icon">
+                        edit
+                    </button>
+                    <button type="submit" asp-action="DeletePost" class="material-symbols-outlined delete-icon">
+                        delete
+                    </button>
+                </form>
+            </div>
+        </div>
+    }
+</div>

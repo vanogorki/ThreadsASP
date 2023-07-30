@@ -1,0 +1,112 @@
+﻿* {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #262a2f;
+    --threads-color: #AAB8C2;
+    --threads-background-color: #E1E8ED;
+}
+
+.fa-robot {
+    font-size: 30px;
+    padding: 15px;
+    color: #1DA1F2;
+    border-radius: 50%;
+}
+
+.validation {
+    color: red;
+    padding: 20px;
+}
+
+.container {
+    background: #fff;
+    padding: 30px 150px;
+    width: 600px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    border-radius: 10px;
+}
+
+    .container h2 {
+        font-size: 25px;
+    }
+
+    .container form input {
+        width: 100%;
+        background: transparent;
+        border: 1px solid var(--threads-color);
+        outline: 0;
+        padding: 15px 10px;
+        border-radius: 4px;
+        margin: 10px 0;
+        font-size: 16px;
+    }
+
+        .container form input:focus-within {
+            outline: 2px solid #1DA1F2;
+            border: 1px solid transparent;
+        }
+
+        .container form input::placeholder {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .container form input:focus-within::placeholder {
+            color: #1DA1F2;
+        }
+
+    .container .login-btn {
+        width: 100%;
+        padding: 10px 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 30px;
+        border: 0;
+        font-weight: 500;
+        cursor: pointer;
+        background-color: #000;
+        color: #fff;
+        margin-top: 15px;
+        margin-bottom: 15px;
+        font-weight: 900;
+        transition: background-color 200ms ease-out;
+    }
+
+    .container .back-link {
+        text-decoration: none;
+        color: #1DA1F2;
+    }
+
+        .container .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .container .login-btn:hover {
+            background-color: #333333;
+        }
+
+        .container p {
+            text-align: left;
+            font-size: 14px;
+            color: #555;
+            margin: 40px 0 50px;
+        }
+
+        .container p a {
+            text-decoration: none;
+            color: #1DA1F2;
+        }
+
+            .container p a:hover {
+                text-decoration: underline;
+            }

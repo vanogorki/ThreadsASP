@@ -1,61 +1,91 @@
 ﻿@model SearchResultViewModel
 
-<style>
-    div.block {
-        width: 100%;
-        word-wrap: break-word;
+<script>
+
+    function redirectToUser(e, username) {
+        //e.stopPropagation();
+        console.log(e);
+        location.href = `/${username}`;
     }
 
-    #rcorners1 {
-        border-radius: 25px;
-        border: 2px solid grey;
-        padding: 20px;
-    }
+</script>
 
-    #rcornersImage {
-        border-radius: 30px;
-        padding: 20px;
-    }
-</style>
+<div class="main-body__border">
 
-
-@if (Model.SearchPosts.Count() != 0 || Model.SearchUsers.Count() != 0)
-{
-    <h3>Search result for "@Model.SearchString"</h3>
-    @foreach (var f in Model.SearchUsers ?? Enumerable.Empty<ApplicationUser>())
+    @if (Model.SearchPosts.Count() != 0 || Model.SearchUsers.Count() != 0)
     {
-        <div style="text-align:left;" class="m-2">
-            <a class="btn" href="/@f.UserName">
-                <img class="d-inline" src="/images/@f.ProfileImgName"
-                     style="overflow:hidden; border-radius:50%; max-height:50px; max-width:50px; height:50px; width:50px;" />
-            </a>
-            <a class="btn d-inline" href="/@f.UserName"><strong style="color:white">@f.UserName</strong></a>
+        <div class="page-header">
+            <h2>Search result</h2>
         </div>
-    }
-    
-    <div class="m-5"></div>
-    
-    @foreach (var p in Model.SearchPosts ?? Enumerable.Empty<Post>())
-    {
-        <div style="text-align:left" class="block m-2" id="rcorners1">
-            <a href="/@p.AppUser?.UserName">
-                <img class="d-block" src="/images/@p.AppUser?.ProfileImgName"
-                     style="overflow:hidden; border-radius:50%; max-height:50px; max-width:50px; height:50px; width:50px;" />
-            </a>
-            <a class="link-info d-block" href="/@p.AppUser?.UserName"><strong>@p.AppUser?.UserName</strong></a>
-            <div>@p.Text</div>
-            @if (p.ImgName != null)
-            {
-                <div>
-                    <img style="max-height:400px; max-width:600px; height:100%; width:100%"
-                         id="rcornersImage" src="/images/@p.ImgName">
+
+        @foreach (var f in Model.SearchUsers ?? Enumerable.Empty<ApplicationUser>())
+        {
+            <div class="find-user" style="padding-left: 5px; border-radius: 0; border-bottom: 1px solid #E1E8ED;" onclick="redirectToUser(event, '@f.UserName');">
+                <div class="info">
+                    <div class="avatar">
+                        <img src="/images/@f.ProfileImgName" />
+                    </div>
+                    <h4>
+                        <span>@f.FirstName @f.LastName</span>
+                        <span class="material-symbols-outlined verified-icon">
+                            verified
+                        </span>
+                        <br />
+                        <span class="username">@@@f.UserName</span>
+                    </h4>
                 </div>
-            }
-            <div style="text-align:right">@p.Date</div>
+                @if (f.Id != Model.CurrentUserId && 
+                    Model.CurrentUserFollows.FirstOrDefault(s => s.FollowerUserId == f.Id) == null)
+                {
+                    <form method="post" class="follow-btn" >
+                        <input type="hidden" id="selectedUserId" value="@f.Id" />
+                        <button onclick="followUser(event);">Follow</button>
+                    </form>
+                }
+                @if (f.Id != Model.CurrentUserId && 
+                    Model.CurrentUserFollows.FirstOrDefault(s => s.FollowerUserId == f.Id) != null)
+                {
+                    <form method="post" class="unfollow-btn">
+                        <input type="hidden" id="selectedUserId" value="@f.Id" />
+                        <button onclick="unfollowUser(event);">Following</button>
+                    </form>
+                }
+            </div>
+        }
+
+        @foreach (var p in Model.SearchPosts ?? Enumerable.Empty<Post>())
+        {
+            <div class="post">
+                <div class="avatar" onclick="location.href='/@p.AppUser.UserName';">
+                    <img src="/images/@p.AppUser.ProfileImgName" />
+                </div>
+
+                <div class="body">
+                    <div class="header">
+                        <div class="user" onclick="location.href='/@p.AppUser.UserName';">
+                            <h3 class="full-name">@p.AppUser.FirstName @p.AppUser.LastName</h3>
+                            <span class="material-symbols-outlined verified-icon">
+                                verified
+                            </span>
+                            <p class="username-date">@@@p.AppUser.UserName · @p.Date<p />
+                        </div>
+                        <div class="text">
+                            <p>@p.Text</p>
+                        </div>
+                    </div>
+                    @if (p.ImgName != null)
+                    {
+                        <img onclick="window.open('/images/@p.ImgName', '_blank')" src="/images/@p.ImgName" />
+                    }
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="page-header">
+            <h2>No results for "@Model.SearchString"</h2>
         </div>
     }
-}
-else
-{
-    <h3>No results for "@Model.SearchString"</h3>
-}
+</div>
+

@@ -12,7 +12,7 @@ using ThreadsASP.Models;
 namespace ThreadsASP.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230725175155_First")]
+    [Migration("20230728183029_First")]
     partial class First
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -175,6 +175,12 @@ namespace ThreadsASP.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");

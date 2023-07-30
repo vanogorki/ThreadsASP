@@ -1,55 +1,51 @@
 ﻿@page
-@using System.Web;
-@using ThreadsASP.Services;
 @model SignupModel
 @{
     ViewBag.Title = "Sign up";
 }
 
-<h5 class="bg-primary text-white text-center p-2">Sign Up</h5>
-<form method="post">
-    <div asp-validation-summary="All" class="text-danger"></div>
-    <div class="form-group">
-        <label>Username</label>
-        <input style="background-color:black; color:white"
-               name="UserName" class="form-control" value="@Model.UserName" />
-    </div>
-    <div class="form-group">
-        <label>Email</label>
-        <input style="background-color:black; color:white"
-               name="Email" class="form-control" value="@Model.Email" />
-    </div>
-    <div class="form-group">
-        <label>Password</label>
-        <input style="background-color:black; color:white"
-               name="Password" class="form-control" value="@Model.Password"
-               type="password" />
-    </div>
-    <div class="form-group">
-        <label>Confirm Password</label>
-        <input style="background-color:black; color:white"
-               name="ConfirmPassword" class="form-control" value="@Model.ConfirmPassword"
-               type="password" />
-    </div>
-    <div class="py-2">
-        <button type="submit" class="btn btn-primary">Submit</button>
-        <a class="btn btn-secondary" asp-page="Login">Back</a>
-    </div>
-</form>
+<div class="container">
+    <h2>Create your account</h2>
+    <div asp-validation-summary="All" class="validation"></div>
+
+    <form method="post">
+        <input type="text" placeholder="Username" name="UserName" value="@Model.UserName" autofocus />
+        <input type="text" placeholder="First Name" name="FirstName" value="@Model.FirstName" />
+        <input type="text" placeholder="Last Name" name="LastName" value="@Model.LastName" />
+        <input type="email" placeholder="Email" name="Email" value="@Model.Email" />
+        <input type="password" placeholder="Password" name="Password" value="@Model.Password" />
+        <input type="password" placeholder="Confirm Password" name="ConfirmPassword" value="@Model.ConfirmPassword" />
+        <button type="submit" class="login-btn">Sign up</button>
+    </form>
+</div>
 
 
 @functions {
     public class SignupModel : PageModel
     {
         private UserManager<ApplicationUser> _UserManager;
+        private IUserRepository _userRepository;
 
-        public SignupModel(UserManager<ApplicationUser> UserManager)
+        public SignupModel(UserManager<ApplicationUser> UserManager, IUserRepository userRepository)
         {
             _UserManager = UserManager;
+            _userRepository = userRepository;
         }
 
         [BindProperty]
+        [Required]
+        [MaxLength(14, ErrorMessage = "Username is too long")]
         public string UserName { get; set; } = string.Empty;
+
+        [BindProperty]
+        [Required]
+        [MaxLength(12, ErrorMessage = "First Name is too long")]
+        public string FirstName { get; set; }
+
+        [BindProperty]
+        [Required]
+        [MaxLength(12, ErrorMessage = "Last Name is too long")]
+        public string LastName { get; set; }
 
         [BindProperty]
         [EmailAddress]
@@ -72,6 +68,10 @@
                 new ApplicationUser { UserName = UserName, Email = Email };
                 IdentityResult result =
                 await _UserManager.CreateAsync(user, Password);
+                user.FirstName = FirstName;
+                user.LastName = LastName;
+                _userRepository.SaveNewProfileData();
+
                 if (result.Succeeded)
                 {
                     try

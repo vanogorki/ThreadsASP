@@ -1,65 +1,75 @@
-﻿
+﻿@model string
 
-<div style="background-color: dimgray" class="card">
-    <div class="card-header">Crop Image</div>
-    <div class="card-body">
-        <div id="cropper1"></div>
-        <input type="file" name="file" id="BrowseFile" class="form-control" value="Choose Image" accept="image/*" />
-        <button id="btnupload" style="margin-top: 10px" name="btnupload" class="btn btn-success">Save</button>
+<div class="main-body__border">
+    <div class="page-header">
+        <h2>Crop image</h2>
     </div>
-</div>
 
-@section scripts {
-    <script type="text/javascript">
+    <div class="crop-container">
+        <div id="cropper1"></div>
+        <div style="display: flex">
+            <span class="material-symbols-outlined image-icon">
+                image
+                <input type="file" name="file" id="BrowseFile" accept="image/*" />
+            </span>
+            <div class="save-btn">
+                <button id="btnupload" name="btnupload">Apply</button>
+            </div>
+        </div>
+    </div>
 
-        var basic = $('#cropper1').croppie(
-            {
-                viewport: { width: 300, height: 300, type: 'circle' },
-                boundary: { width: 500, height: 500 },
-                showZoomer: true,
-                url: '/images/preview.jpg',
-                format: 'png'
-            }
-        );
+    @section scripts {
+        <script type="text/javascript">
 
-        function readFile(input) {
-            if (input.files && input.files[0]) {
-
-                var reader = new FileReader();
-
-                reader.onload = function (e) {
-                    $('#cropper1').croppie('bind', {
-                        url: e.target.result
-                    });
+            var basic = $('#cropper1').croppie(
+                {
+                    viewport: { width: 300, height: 300, type: 'circle' },
+                    boundary: { width: 650, height: 650 },
+                    showZoomer: true,
+                    url: '/images/@Model',
+                    format: 'png'
                 }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
+            );
 
-        $('#BrowseFile').on('change', function () { readFile(this); });
+            function readFile(input) {
+                if (input.files && input.files[0]) {
 
-        $('#btnupload').on('click', function () {
-            basic.croppie('result', 'blob').then(function (blob) {
+                    var reader = new FileReader();
 
-                var formData = new FormData();
-
-                formData.append('blob', blob);
-                var myAppUrlSettings = {
-                    MyUsefulUrl: '@Url.Action("SetProfilePicture", "UserProfile")'
-                }
-
-                var request = new XMLHttpRequest();
-                request.open('POST', myAppUrlSettings.MyUsefulUrl);
-                request.send(formData);
-                request.onreadystatechange = function () {
-                    if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-                        
-                        var response = JSON.parse(request.responseText);
-
-                        window.location.replace(response.message);
+                    reader.onload = function (e) {
+                        $('#cropper1').croppie('bind', {
+                            url: e.target.result
+                        });
                     }
+                    reader.readAsDataURL(input.files[0]);
                 }
+            }
+
+            $('#BrowseFile').on('change', function () { readFile(this); });
+
+            $('#btnupload').on('click', function () {
+                basic.croppie('result', 'blob').then(function (blob) {
+
+                    var formData = new FormData();
+
+                    formData.append('blob', blob);
+                    var myAppUrlSettings = {
+                        MyUsefulUrl: '@Url.Action("SetProfilePicture", "UserProfile")'
+                    }
+
+                    var request = new XMLHttpRequest();
+                    request.open('POST', myAppUrlSettings.MyUsefulUrl);
+                    request.send(formData);
+                    request.onreadystatechange = function () {
+                        if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+
+                            var response = JSON.parse(request.responseText);
+
+                            window.location.replace(response.message);
+                        }
+                    }
+                })
             })
-        })
-    </script>
-}
+        </script>
+    }
+</div>

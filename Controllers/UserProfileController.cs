@@ -5,8 +5,6 @@ using ThreadsASP.Models;
 using ThreadsASP.FileUploadService;
 using ThreadsASP.Models.Repositories;
 using Microsoft.AspNetCore.Authorization;
-using System.Drawing;
-using System.Drawing.Imaging;
 
 namespace ThreadsASP.Controllers
 {
@@ -30,7 +28,7 @@ namespace ThreadsASP.Controllers
             _followsRepository = followsRepository;
         }
 
-        [HttpGet("{accName}")]
+        [Route("{accName}")]
         public async Task<IActionResult> Index(string accName)
         {
             var selectedUser = await _userManager.FindByNameAsync(accName);
@@ -39,12 +37,16 @@ namespace ThreadsASP.Controllers
             {
                 return NotFound();
             }
+            int followingCount = _followsRepository.Follows.Where(x => x.FollowingUserId == selectedUser.Id).Count();
+            int followersCount = _followsRepository.Follows.Where(z => z.FollowerUserId == selectedUser.Id).Count();
             return View(new UserPageViewModel
             {
                 Posts = _postsRepository.GetUserPosts(selectedUser.Id),
                 IsFollowing = _followsRepository.IsFollowing(currentUser.Id, selectedUser.Id),
                 SelectedUser = selectedUser,
-                IsCurrentUser = (selectedUser == currentUser) ? true : false
+                IsCurrentUser = (selectedUser == currentUser) ? true : false,
+                FollowingCount = followingCount,
+                FollowersCount = followersCount
             });
         }
 
@@ -63,7 +65,7 @@ namespace ThreadsASP.Controllers
             _postsRepository.DeletePost(removePost);
             return Redirect($"http://localhost:5000/{accName}");
         }
-        
+
         [HttpPost]
         public IActionResult EditPost(long? Id)
         {
@@ -75,10 +77,11 @@ namespace ThreadsASP.Controllers
             return RedirectToAction("CreatePost", "Home", editPost);
         }
 
-        [HttpGet("{action}")]
-        public IActionResult CropImage()
+        [Route("{action}")]
+        public async Task<IActionResult> CropImage()
         {
-            return View();
+            var currentUser = await _userManager.GetUserAsync(User);
+            return View("CropImage", currentUser.ProfileImgName);
         }
 
         [HttpPost]
@@ -94,27 +97,27 @@ namespace ThreadsASP.Controllers
                     LocalFileService.DeleteImage(user.ProfileImgName);
                 }
                 user.ProfileImgName = newFileName;
-                _userRepository.SaveNewProfilePicture();
+                _userRepository.SaveNewProfileData();
                 return Json(new { Message = $"http://localhost:5000/{user.UserName}" });
             }
             return Json(new { Message = $"http://localhost:5000/{user.UserName}" });
         }
 
-        public async Task<IActionResult> Follow(string selectedUserId)
+        [HttpPost]
+        public async Task Follow(string selectedUserId)
         {
             var selectedUser = await _userManager.FindByIdAsync(selectedUserId);
             var currentUser = await _userManager.GetUserAsync(User);
             _followsRepository.Follow(currentUser, selectedUser);
-            return Redirect($"http://localhost:5000/{selectedUser.UserName}");
         }
 
-        public async Task<IActionResult> UnFollow(string selectedUserId)
+        [HttpPost]
+        public async Task UnFollow(string selectedUserId)
         {
             var selectedUser = await _userManager.FindByIdAsync(selectedUserId);
             var currentUser = await _userManager.GetUserAsync(User);
             var unFollow = _followsRepository.Follows.Where(x => x.FollowingUserId == currentUser.Id && x.FollowerUserId == selectedUser.Id).FirstOrDefault();
             _followsRepository.UnFollow(unFollow);
-            return Redirect($"http://localhost:5000/{selectedUser.UserName}");
         }
     }
 }

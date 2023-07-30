@@ -8,5 +8,7 @@ namespace ThreadsASP.Models.ViewModels
         public bool IsFollowing { get; set; }
         public ApplicationUser? SelectedUser { get; set; }
         public bool? IsCurrentUser { get; set; }
+        public int? FollowingCount { get; set; }
+        public int? FollowersCount { get; set; }
     }
 }

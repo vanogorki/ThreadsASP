@@ -14,7 +14,6 @@ namespace ThreadsASP
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
             builder.Services.AddRazorPages();
 
             builder.Services.AddControllersWithViews();
@@ -36,7 +35,8 @@ namespace ThreadsASP
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
 
-            builder.Services.Configure<IdentityOptions>(opts => {
+            builder.Services.Configure<IdentityOptions>(opts =>
+            {
                 opts.Password.RequiredLength = 6;
                 opts.Password.RequireNonAlphanumeric = false;
                 opts.Password.RequireLowercase = false;

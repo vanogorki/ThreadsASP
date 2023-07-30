@@ -1,0 +1,42 @@
+﻿@model List<ApplicationUser>
+
+
+<form class="user-input" method="get" asp-action="SearchResult">
+    <span class="material-symbols-outlined search-icon">
+        search
+        <input type="text" placeholder="Search ThreadsASP"
+               name="searchString" id="searchString" />
+    </span>
+</form>
+
+@if (Model.Count != 0)
+{
+    <div class="follow-suggest">
+        <div class="header">
+            <h3>Who to follow</h3>
+        </div>
+
+        @foreach (var u in Model ?? Enumerable.Empty<ApplicationUser>())
+        {
+            <div class="find-user" onclick="location.href='/@u.UserName';">
+                <div class="info">
+                    <div class="avatar">
+                        <img src="/images/@u.ProfileImgName" />
+                    </div>
+                    <h4>
+                        <span style="font-size: 14px">@u.FirstName @u.LastName</span>
+                        <span class="material-symbols-outlined verified-icon">
+                            verified
+                        </span>
+                        <br />
+                        <span class="username">@@@u.UserName</span>
+                    </h4>
+                </div>
+                <form method="post" class="follow-btn">
+                    <input type="hidden" id="selectedUserId" value="@u.Id" />
+                    <button onclick="followUser(event);">Follow</button>
+                </form>
+            </div>
+        }
+    </div>
+}

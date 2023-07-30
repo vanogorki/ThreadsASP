@@ -1,27 +1,23 @@
 ﻿@page
-@using Microsoft.AspNetCore.Authorization;
 @model LoginModel
 @{
     ViewBag.Title = "Log in";
 }
 
-<div class="bg-primary text-center text-white p-2"><h4>Log In</h4></div>
-<div class="m-1 text-danger" asp-validation-summary="All"></div>
-<form method="post">
-    <input type="hidden" name="returnUrl" value="@Model.ReturnUrl" />
-    <div class="form-group">
-        <label>Username</label>
-        <input style="background-color:black; color:white"
-            class="form-control black-back" asp-for="UserName" />
-    </div>
-    <div class="form-group">
-        <label>Password</label>
-        <input style="background-color:black; color:white"
-            asp-for="Password" type="password" class="form-control" />
-    </div>
-    <button class="btn btn-primary mt-2" type="submit">Log In</button>
-    <a class="btn btn-secondary mt-2" asp-page="Signup">Sign Up</a>
-</form>
+<div class="container">
+    <i class="fa-solid fa-robot"></i>
+    <h2>Sign in to ThreadsASP</h2>
+    <div asp-validation-summary="All" class="validation"></div>
+
+    <form method="post">
+        <input type="hidden" name="returnUrl" value="@Model.ReturnUrl" />
+        <input type="text" placeholder="Username" autofocus asp-for="UserName" />
+        <input type="password" placeholder="Password" asp-for="Password" />
+        <button type="submit" class="login-btn">Log In</button>
+    </form>
+
+    <p>Don't have an account? <a asp-page="Signup">Sign up</a></p>
+</div>
 
 
 @functions {
@@ -55,7 +51,6 @@
                 var user = await _UserManager.FindByNameAsync(UserName);
                 if (user != null)
                 {
-                    // проверяем, подтвержден ли email
                     if (!await _UserManager.IsEmailConfirmedAsync(user))
                     {
                         ModelState.AddModelError("", "You didn't verify your email");
@@ -76,3 +71,4 @@
         }
     }
 }
+
