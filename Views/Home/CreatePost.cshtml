@@ -11,7 +11,7 @@
     <div class="bweep-box">
         <form method="post" enctype="multipart/form-data">
             <div class="user-input">
-                <img src="/images/@Model.AppUser?.ProfileImgName" />
+                <img src="/images/@Model.AppUser?.ProfileImgName" onclick="location.href='/@Model.AppUser?.UserName';" />
                 <textarea type="text" placeholder="What is happening?!" required maxlength="300"
                           name="TextArea" autofocus>@Model?.Text</textarea>
             </div>
