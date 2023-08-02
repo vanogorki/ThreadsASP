@@ -86,7 +86,7 @@
                         await emailService.SendEmailAsync(Email, "Confirm your account",
                             $"Please confirm your account registration by clicking on the <a href='{callbackUrl}'>link</a>");
 
-                        return Content("Check your email to complete the registration");
+                        return Redirect("http://localhost:5000/account/message");
                     }
                     catch (Exception)
                     {

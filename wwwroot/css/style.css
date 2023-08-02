@@ -11,20 +11,26 @@ body {
     --threads-color: #AAB8C2;
     --threads-background-color: #E1E8ED;
     --threads-searchbar-background-color: #F5F8FA;
+    display: flex;
+    align-content: center;
+    justify-content: center;
     height: 100vh;
-    min-width: 1300px;
+    max-width: 1300px;
     margin-left: auto;
     margin-right: auto;
     padding: 0 10px;
+    overflow-y: hidden;
 }
 
 .content {
-    min-width: 650px;
-    position: absolute;
-    left: 50%;
-    right: 50%;
-    transform: translate(-60%, 0);
+    flex: 0.5;
+    min-width: fit-content;
+    overflow-y: auto;
 }
+
+    .content::-webkit-scrollbar {
+        display: none;
+    }
 
 .main-body__border {
     border-right: 1px solid var(--threads-background-color);
@@ -52,35 +58,157 @@ body {
     margin-right: 5px;
 }
 
+/*media section*/
+
+
+
+@media screen and (min-width: 1301px) {
+    .sidebar {
+        flex: 0.2;
+        min-width: 250px;
+    }
+
+    .sidebar-option {
+        border-radius: 30px;
+        height: 50px;
+    }
+
+    .sidebar-button__small {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 1300px) {
+    .sidebar {
+        flex: 0.05;
+        min-width: 70px;
+    }
+
+    .sidebar-option {
+        border-radius: 50%;
+    }
+
+        .sidebar-option .material-symbols-outlined {
+            padding: 15px;
+        }
+
+        .sidebar-option h2 {
+            display: none;
+        }
+
+    .sidebar-button {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 1080px) {
+    .searchbar {
+        display: none;
+    }
+}
+
+@media screen and (min-width: 801px) {
+    .post .header .user {
+        display: inline-flex;
+    }
+
+    .post .post-image {
+        max-width: 550px;
+        max-height: 650px;
+    }
+
+    .post .header .text {
+        width: 550px;
+    }
+
+    .post.repost .repost-image {
+        max-width: 450px;
+        max-height: 550px;
+    }
+
+    .post.repost .text {
+        max-width: 450px;
+    }
+
+    .profile-info .btn {
+        margin-left: 300px;
+    }
+}
+
+@media screen and (max-width: 800px) {
+    .post .post-image {
+        max-width: 300px;
+        max-height: 400px;
+    }
+
+    .post .header .text {
+        width: 300px;
+    }
+
+    .post.repost .repost-image {
+        max-width: 200px;
+        max-height: 300px;
+    }
+
+    .post.repost .text {
+        max-width: 200px;
+    }
+
+    .profile-info .btn {
+        margin-left: 100px;
+    }
+}
+
+@media screen and (min-width: 541px) {
+    .sidebar-option .material-symbols-outlined {
+        padding: 20px;
+    }
+
+    .sidebar-button__small {
+        margin-top: 10px;
+    }
+}
+
+@media screen and (max-width: 540px) {
+    .profile-info .btn {
+        margin-left: 50px;
+    }
+
+    .sidebar {
+        position: fixed;
+        z-index: 999;
+        background-color: white;
+        display: inline-flex;
+        justify-content: space-evenly;
+        bottom: 0;
+        width: 100%;
+    }
+
+        .sidebar .fa-robot {
+            display: none;
+        }
+}
+
+
+/*media section*/
+
 
 /*sidebar starts */
 
-
-.sidebar {
-    min-width: 250px;
-    position: fixed;
-    right: 66.6%;
-    top: 0%;
-    transform: translateX(-20%);
-}
 
 .sidebar-option {
     display: inline-flex;
     align-items: center;
     cursor: pointer;
-    height: 50px;
     margin: 5px 0 5px 0;
     transition: background-color 200ms ease-out;
-    border-radius: 30px;
 }
 
     .sidebar-option:hover {
         background-color: var(--threads-background-color);
     }
 
-    .sidebar-option .material-symbols-outlined {
-        padding: 20px;
-    }
+
 
     .sidebar-option h2 {
         font-weight: 100;
@@ -98,15 +226,28 @@ body {
     height: 50px;
     margin-top: 20px;
     transition: background-color 200ms ease-out;
+    cursor: pointer;
 }
 
-    .sidebar-button:hover {
+.sidebar-button__small {
+    background-color: var(--threads-bweep-color);
+    padding: 20px;
+    color: white;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 200ms ease-out;
+}
+
+    .sidebar-button__small:hover {
         background-color: var(--threads-bweep-color-hover);
-        cursor: pointer;
     }
 
+.sidebar-button:hover {
+    background-color: var(--threads-bweep-color-hover);
+}
+
 .fa-robot {
-    font-size: 30px;
+    font-size: 25px;
     padding: 15px;
     color: var(--threads-bweep-color);
     border-radius: 50%;
@@ -195,7 +336,6 @@ body {
         background-color: #D4F1F4;
     }
 
-
     .image-icon input[type=file] {
         position: absolute;
         top: 0;
@@ -224,6 +364,23 @@ body {
     border-bottom: 1px solid var(--threads-background-color);
 }
 
+    .post.repost {
+        border: 1px solid var(--threads-background-color);
+        border-radius: 20px;
+    }
+
+        .post.repost .body img {
+            object-fit: contain;
+            border-radius: 20px;
+            transition: filter 200ms ease-out;
+        }
+
+        .post.repost .header .text {
+            margin-top: 5px;
+            font-size: 15px;
+            word-wrap: break-word;
+        }
+
     .post .avatar {
         padding: 15px;
     }
@@ -240,13 +397,12 @@ body {
             }
 
     .post .body {
+        max-width: 100%;
         flex: 1;
         padding: 15px 15px 15px 0px;
     }
 
         .post .body img {
-            max-width: 500px;
-            max-height: 600px;
             object-fit: contain;
             border-radius: 20px;
             transition: filter 200ms ease-out;
@@ -261,34 +417,119 @@ body {
         margin-bottom: 20px;
     }
 
-        .post .header .user {
-            display: inline-flex;
+        .post .header .user:hover {
+            cursor: pointer;
         }
 
-            .post .header .user:hover {
-                cursor: pointer;
+        .post .header .user .full-name {
+            font-size: 15px;
+        }
+
+            .post .header .user .full-name:hover {
+                text-decoration: underline;
             }
 
-            .post .header .user .full-name {
-                font-size: 15px;
-            }
-
-                .post .header .user .full-name:hover {
-                    text-decoration: underline;
-                }
-
-            .post .header .user .username-date {
-                font-weight: 500;
-                color: gray;
-                font-size: 13px;
-            }
+        .post .header .user .username-date {
+            font-weight: 500;
+            color: gray;
+            font-size: 13px;
+        }
 
         .post .header .text {
             margin-top: 5px;
             font-size: 15px;
-            width: 500px;
             word-wrap: break-word;
         }
+
+    .post .footer {
+        padding-top: 10px;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+        .post .footer .repost-form {
+            cursor: pointer;
+            transition: color 100ms ease-out;
+        }
+
+            .post .footer .repost-form:hover {
+                color: #48cc48;
+            }
+
+                .post .footer .repost-form:hover .btn.fa-retweet {
+                    background-color: #e4ffe4;
+                    color: #48cc48;
+                }
+
+        .post .footer .reposts-count {
+            font-weight: 500;
+        }
+
+        .post .footer .btn {
+            background: 0;
+            border-radius: 50%;
+            border: 0;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 150ms ease-out;
+        }
+
+        .post .footer .like-form {
+            margin: 0 20px;
+            cursor: pointer;
+            transition: color 100ms ease-out;
+        }
+
+            .post .footer .like-form:hover {
+                color: #f556bf;
+            }
+
+        .post .footer .like-form:hover .btn.like {
+            color: #f556bf;
+            background-color: #ffdef4;
+        }
+
+        .post .footer .btn.unlike {
+            color: #ff187d;
+        }
+
+        .post .footer .like-form:hover .btn.unlike {
+            background-color: #ffdef4;
+        }
+
+        .post .footer .like-form .liked {
+            color: #ff187d;
+        }
+
+        .post .footer .owner {
+            display: inline-flex;
+            padding: 10px;
+            border-radius: 50%;
+            border: 0px;
+            cursor: pointer;
+        }
+
+.edit-icon {
+    color: #FFD700;
+    background-color: white;
+    transition: background-color 200ms ease-out;
+}
+
+    .edit-icon:hover {
+        background-color: #FFEA00;
+    }
+
+.delete-icon {
+    color: #D22B2B;
+    background-color: white;
+    transition: background-color 200ms ease-out;
+}
+
+    .delete-icon:hover {
+        background-color: #FA8072;
+    }
 
 
 /*post ends*/
@@ -297,10 +538,7 @@ body {
 /*searchbar starts*/
 
 .searchbar {
-    position: fixed;
-    left: 66.6%;
-    top: 0%;
-    transform: translateX(-15%);
+    flex: 0.3;
 }
 
     .searchbar .user-input {
@@ -475,70 +713,54 @@ body {
             filter: brightness(80%)
         }
 
-    .profile-info .edit-btn {
-        background-color: white;
-        border: 1px solid var(--threads-background-color);
-        color: black;
+    .profile-info .btn {
         font-weight: 700;
         font-size: 15px;
         border-radius: 30px;
         width: 120px;
         height: 40px;
         margin-top: 50px;
-        margin-left: 350px;
         transition: background-color 200ms ease-out;
+        cursor: pointer;
     }
 
-        .profile-info .edit-btn:hover {
-            cursor: pointer;
-            background-color: var(--threads-background-color);
+        .profile-info .btn.edit {
+            background-color: white;
+            border: 1px solid var(--threads-background-color);
+            color: black;
         }
 
-    .profile-info .follow-btn {
-        background-color: black;
-        border: none;
-        color: white;
-        font-weight: 700;
-        font-size: 15px;
-        border-radius: 30px;
-        width: 120px;
-        height: 40px;
-        margin-top: 50px;
-        margin-left: 350px;
-        transition: background-color 200ms ease-out;
-    }
-
-        .profile-info .follow-btn:hover {
-            cursor: pointer;
-            background-color: #333333;
-        }
-
-    .profile-info .unfollow-btn {
-        background-color: white;
-        border: 1px solid var(--threads-background-color);
-        color: black;
-        font-weight: 700;
-        font-size: 15px;
-        border-radius: 30px;
-        width: 120px;
-        height: 40px;
-        margin-top: 50px;
-        margin-left: 350px;
-        transition: background-color 200ms ease-out;
-    }
-
-        .profile-info .unfollow-btn:hover {
-            font-size: 0;
-            cursor: pointer;
-            background-color: #ffbfbd;
-            border: 1px solid crimson;
-        }
-
-            .profile-info .unfollow-btn:hover:after {
-                color: crimson;
-                font-size: 15px;
-                content: "Unfollow";
+            .profile-info .btn.edit:hover {
+                background-color: var(--threads-background-color);
             }
+
+        .profile-info .btn.follow {
+            background-color: black;
+            border: none;
+            color: white;
+        }
+
+            .profile-info .btn.follow:hover {
+                background-color: #333333;
+            }
+
+        .profile-info .btn.unfollow {
+            background-color: white;
+            border: 1px solid var(--threads-background-color);
+            color: black;
+        }
+
+            .profile-info .btn.unfollow:hover {
+                font-size: 0;
+                background-color: #ffbfbd;
+                border: 1px solid crimson;
+            }
+
+                .profile-info .btn.unfollow:hover:after {
+                    color: crimson;
+                    font-size: 15px;
+                    content: "Unfollow";
+                }
 
     .profile-info .username {
         font-size: 15px;
@@ -551,43 +773,7 @@ body {
         font-weight: 300;
     }
 
-.post .footer {
-    justify-content: flex-end;
-}
 
-    .post .footer button {
-        margin-left: 10px;
-    }
-
-.edit-icon {
-    display: inline-flex;
-    padding: 5px;
-    color: #FFD700;
-    border-radius: 50%;
-    transition: background-color 200ms ease-out;
-    border: 0px;
-    background-color: white;
-}
-
-    .edit-icon:hover {
-        background-color: #FFEA00;
-        cursor: pointer;
-    }
-
-.delete-icon {
-    display: inline-flex;
-    padding: 5px;
-    color: #D22B2B;
-    border-radius: 50%;
-    transition: background-color 200ms ease-out;
-    border: 0px;
-    background-color: white;
-}
-
-    .delete-icon:hover {
-        background-color: #FA8072;
-        cursor: pointer;
-    }
 
 
 /*profile info ends*/

@@ -34,9 +34,25 @@ namespace ThreadsASP.Models
                 .WithMany(z => z.ReceiveFollows)
                 .HasForeignKey(k => k.FollowerUserId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
+
+            builder.Entity<Like>()
+                .HasKey(x => new { x.UserId, x.PostId });
+
+            builder.Entity<Like>()
+                .HasOne(u => u.User)
+                .WithMany(l => l.SendLikes)
+                .HasForeignKey(k => k.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
+            builder.Entity<Like>()
+                .HasOne(p => p.Post)
+                .WithMany(l => l.Likes)
+                .HasForeignKey(k => k.PostId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
         }
 
         public DbSet<Post> Posts { get; set; }
         public DbSet<Follow> Follows { get; set; }
+        public DbSet<Like> Likes { get; set; }
     }
 }

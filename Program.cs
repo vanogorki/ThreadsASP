@@ -26,6 +26,8 @@ namespace ThreadsASP
 
             builder.Services.AddScoped<IFileService, LocalFileService>();
 
+            builder.Services.AddScoped<ILikesRepository, LikesRepository>();
+
             builder.Services.AddScoped<EmailService>();
 
             builder.Services.AddDbContext<AppDbContext>(opts =>

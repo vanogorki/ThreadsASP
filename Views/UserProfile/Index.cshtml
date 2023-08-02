@@ -23,22 +23,24 @@
             @if (Model.IsCurrentUser == true)
             {
                 <button onclick="location.href='/Account/Editor/@Model.SelectedUser?.Id';"
-                class="edit-btn">Edit profile</button>
+                        class="btn edit">
+                    Edit profile
+                </button>
             }
             else
             {
                 @if (!Model.IsFollowing)
                 {
                     <form method="post">
-                        <input type="hidden" id="selectedUserId" value="@Model.SelectedUser?.Id" />
-                        <button class="follow-btn" onclick="followUser(event);">Follow</button>
+                        <input type="hidden" name="selectedUserId" value="@Model.SelectedUser?.Id" />
+                        <button class="btn follow" asp-action="Follow" asp-controller="UserProfile">Follow</button>
                     </form>
                 }
                 else
                 {
                     <form method="post">
-                        <input type="hidden" id="selectedUserId" value="@Model.SelectedUser?.Id" />
-                        <button class="unfollow-btn" onclick="unfollowUser(event);">Following</button>
+                        <input type="hidden" name="selectedUserId" value="@Model.SelectedUser?.Id" />
+                        <button class="btn unfollow" asp-action="UnFollow" asp-controller="UserProfile">Following</button>
                     </form>
                 }
             }
@@ -63,6 +65,7 @@
     @foreach (var p in Model?.Posts ?? Enumerable.Empty<Post>())
     {
         <div class="post">
+
             <div class="avatar" onclick="location.href='/@p.AppUser.UserName';">
                 <img src="/images/@p.AppUser.ProfileImgName" />
             </div>
@@ -70,32 +73,95 @@
             <div class="body">
                 <div class="header">
                     <div class="user" onclick="location.href='/@p.AppUser.UserName';">
-                        <h3 class="full-name">@p.AppUser.FirstName @p.AppUser.LastName</h3>
-                        <span class="material-symbols-outlined verified-icon">
-                            verified
-                        </span>
+
+                        <h3 class="full-name">
+                            @p.AppUser.FirstName @p.AppUser.LastName
+                            <span class="material-symbols-outlined verified-icon">
+                                verified
+                            </span>
+                        </h3>
+
                         <p class="username-date">@@@p.AppUser.UserName · @p.Date<p />
                     </div>
                     <div class="text">
                         <p>@p.Text</p>
                     </div>
-                </div>
 
+                </div>
                 @if (p.ImgName != null)
                 {
-                    <img onclick="window.open('/images/@p.ImgName', '_blank')" src="/images/@p.ImgName" />
+                    <img class="post-image" onclick="window.open('/images/@p.ImgName', '_blank')" src="/images/@p.ImgName" />
                 }
 
-                <form method="post" class="footer" style="display: @(Model?.IsCurrentUser == true ? "flex" : "none")">
-                    <input name="Id" value="@p.Id" type="hidden" />
-                    <input name="accName" value="@p.AppUser?.UserName" type="hidden" />
-                    <button type="submit" asp-action="EditPost" class="material-symbols-outlined edit-icon">
-                        edit
-                    </button>
-                    <button type="submit" asp-action="DeletePost" class="material-symbols-outlined delete-icon">
-                        delete
-                    </button>
-                </form>
+                @if (p.IsReposted == true)
+                {
+                    <div class="post repost">
+                        <div class="avatar" onclick="location.href='/@p.Repost.AppUser.UserName';">
+                            <img src="/images/@p.Repost.AppUser.ProfileImgName" />
+                        </div>
+
+                        <div class="body">
+                            <div class="header">
+                                <div class="user" onclick="location.href='/@p.Repost.AppUser.UserName';">
+                                    <h3 class="full-name">
+                                        @p.Repost.AppUser.FirstName @p.Repost.AppUser.LastName
+                                        <span class="material-symbols-outlined verified-icon">
+                                            verified
+                                        </span>
+                                    </h3>
+
+                                    <p class="username-date">@@@p.Repost.AppUser.UserName · @p.Repost.Date<p />
+                                </div>
+
+                                <div class="text">
+                                    <p>@p.Repost.Text</p>
+                                </div>
+
+                            </div>
+                            @if (p.Repost.ImgName != null)
+                            {
+                                <img class="repost-image" onclick="window.open('/images/@p.Repost.ImgName', '_blank')" src="/images/@p.Repost.ImgName" />
+                            }
+                        </div>
+                    </div>
+                }
+
+                <div class="footer">
+                    @if (p.Likes.FirstOrDefault(x => x.UserId == Model.CurrentUser.Id) == null)
+                    {
+                        <form method="post" class="like-form">
+                            <input type="hidden" name="postId" value="@p.Id" />
+                            <button type="submit" class="btn like fa-regular fa-heart" asp-action="SendLike" asp-controller="Home"></button>
+                            <p class="likes-count" style="display: @((p?.Likes.Count() != 0) ? "inline-block" : "none")">@p?.Likes.Count()</p>
+                        </form>
+                    }
+                    else
+                    {
+                        <form method="post" class="like-form">
+                            <input type="hidden" name="postId" value="@p.Id" />
+                            <button type="submit" class="btn unlike fa-solid fa-heart" asp-action="RemoveLike" asp-controller="Home"></button>
+                            <p class="likes-count liked" style="display: @((p?.Likes.Count() != 0) ? "inline-block" : "none")">@p?.Likes.Count()</p>
+                        </form>
+                    }
+
+                    <form method="get" class="repost-form">
+                        <input type="hidden" name="repostId" value="@p.Id" />
+                        <button asp-action="CreatePost" asp-controller="Home" class="btn fa-solid fa-retweet">
+                        </button>
+                        <p class="reposts-count" style="display: @((p?.RepostsCount != 0) ? "inline-block" : "none")">@p?.RepostsCount</p>
+                    </form>
+
+                    <form method="post" style="display: @(Model?.IsCurrentUser == true ? "flex" : "none");">
+                        <input name="Id" value="@p.Id" type="hidden" />
+                        <input name="accName" value="@p.AppUser?.UserName" type="hidden" />
+                        <button type="submit" asp-action="EditPost" class="material-symbols-outlined owner edit-icon">
+                            edit
+                        </button>
+                        <button type="submit" asp-action="DeletePost" class="material-symbols-outlined owner delete-icon">
+                            delete
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     }

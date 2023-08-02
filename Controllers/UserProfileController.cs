@@ -5,6 +5,7 @@ using ThreadsASP.Models;
 using ThreadsASP.FileUploadService;
 using ThreadsASP.Models.Repositories;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 
 namespace ThreadsASP.Controllers
 {
@@ -37,16 +38,15 @@ namespace ThreadsASP.Controllers
             {
                 return NotFound();
             }
-            int followingCount = _followsRepository.Follows.Where(x => x.FollowingUserId == selectedUser.Id).Count();
-            int followersCount = _followsRepository.Follows.Where(z => z.FollowerUserId == selectedUser.Id).Count();
             return View(new UserPageViewModel
             {
-                Posts = _postsRepository.GetUserPosts(selectedUser.Id),
+                Posts = await _postsRepository.Posts.Where(x => x.AppUserId == selectedUser.Id).OrderByDescending(i => i.Id).ToListAsync(),
                 IsFollowing = _followsRepository.IsFollowing(currentUser.Id, selectedUser.Id),
                 SelectedUser = selectedUser,
+                CurrentUser = currentUser,
                 IsCurrentUser = (selectedUser == currentUser) ? true : false,
-                FollowingCount = followingCount,
-                FollowersCount = followersCount
+                FollowingCount = _followsRepository.Follows.Where(x => x.FollowingUserId == selectedUser.Id).Count(),
+                FollowersCount = _followsRepository.Follows.Where(z => z.FollowerUserId == selectedUser.Id).Count()
             });
         }
 
@@ -57,6 +57,10 @@ namespace ThreadsASP.Controllers
             if (removePost == null)
             {
                 return NotFound();
+            }
+            if (removePost.IsReposted == true)
+            {
+                removePost.Repost.RepostsCount--;
             }
             if (_userManager.Users.FirstOrDefault(u => u.ProfileImgName == removePost.ImgName) == null)
             {
@@ -104,20 +108,24 @@ namespace ThreadsASP.Controllers
         }
 
         [HttpPost]
-        public async Task Follow(string selectedUserId)
+        public async Task<IActionResult> Follow(string selectedUserId)
         {
             var selectedUser = await _userManager.FindByIdAsync(selectedUserId);
             var currentUser = await _userManager.GetUserAsync(User);
             _followsRepository.Follow(currentUser, selectedUser);
+            string jsCode = "<script>window.history.back();</script>";
+            return Content(jsCode, "text/html");
         }
 
         [HttpPost]
-        public async Task UnFollow(string selectedUserId)
+        public async Task<IActionResult> UnFollow(string selectedUserId)
         {
             var selectedUser = await _userManager.FindByIdAsync(selectedUserId);
             var currentUser = await _userManager.GetUserAsync(User);
             var unFollow = _followsRepository.Follows.Where(x => x.FollowingUserId == currentUser.Id && x.FollowerUserId == selectedUser.Id).FirstOrDefault();
             _followsRepository.UnFollow(unFollow);
+            string jsCode = "<script>window.history.back();</script>";
+            return Content(jsCode, "text/html");
         }
     }
 }

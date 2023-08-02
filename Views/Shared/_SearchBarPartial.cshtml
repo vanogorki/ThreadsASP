@@ -33,8 +33,8 @@
                     </h4>
                 </div>
                 <form method="post" class="follow-btn">
-                    <input type="hidden" id="selectedUserId" value="@u.Id" />
-                    <button onclick="followUser(event);">Follow</button>
+                    <input type="hidden" name="selectedUserId" value="@u.Id" />
+                    <button asp-action="Follow" asp-controller="UserProfile">Follow</button>
                 </form>
             </div>
         }

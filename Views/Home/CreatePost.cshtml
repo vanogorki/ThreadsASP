@@ -1,9 +1,9 @@
-﻿@model Post
+﻿@model CreatePostViewModel
 @{
     ViewBag.Title = "Create Post";
 }
 
-<div class="main-body__border">
+<div class="main-body__border" style="border-bottom: 1px solid #E1E8ED;">
     <div class="page-header">
         <h2>Bweep!</h2>
     </div>
@@ -11,9 +11,9 @@
     <div class="bweep-box">
         <form method="post" enctype="multipart/form-data">
             <div class="user-input">
-                <img src="/images/@Model.AppUser?.ProfileImgName" onclick="location.href='/@Model.AppUser?.UserName';" />
+                <img src="/images/@Model.NewPost.AppUser?.ProfileImgName" onclick="location.href='/@Model.NewPost.AppUser?.UserName';" />
                 <textarea type="text" placeholder="What is happening?!" required maxlength="300"
-                          name="TextArea" autofocus>@Model?.Text</textarea>
+                          name="TextArea" autofocus>@Model?.NewPost.Text</textarea>
             </div>
 
             <div style="display: flex">
@@ -21,9 +21,46 @@
                     image
                     <input type="file" accept="image/*" name="file" />
                 </span>
-
+                <input type="hidden" value="@Model.NewPost?.Id" name="editPostId" />
+                <input type="hidden" value="@Model.Repost?.Id" name="repostId" />
                 <button type="submit" class="bweep-button">Bweep</button>
             </div>
         </form>
     </div>
+
+
+    @if (Model.Repost != null)
+    {
+        <div style="padding: 40px;">
+            <div class="post repost">
+                <div class="avatar" onclick="location.href='/@Model.Repost.AppUser.UserName';">
+                    <img src="/images/@Model.Repost.AppUser.ProfileImgName" />
+                </div>
+
+                <div class="body">
+                    <div class="header">
+                        <div class="user" onclick="location.href='/@Model.Repost.AppUser.UserName';">
+                            <h3 class="full-name">
+                                @Model.Repost.AppUser.FirstName @Model.Repost.AppUser.LastName
+                                <span class="material-symbols-outlined verified-icon">
+                                    verified
+                                </span>
+                            </h3>
+
+                            <p class="username-date">@@@Model.Repost.AppUser.UserName · @Model.Repost.Date<p />
+                        </div>
+
+                        <div class="text">
+                            <p>@Model.Repost.Text</p>
+                        </div>
+
+                    </div>
+                    @if (Model.Repost.ImgName != null)
+                    {
+                        <img class="repost-image" onclick="window.open('/images/@Model.Repost.ImgName', '_blank')" src="/images/@Model.Repost.ImgName" />
+                    }
+                </div>
+            </div>
+        </div>
+    }
 </div>

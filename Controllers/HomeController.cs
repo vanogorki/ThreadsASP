@@ -17,14 +17,17 @@ namespace ThreadsASP.Controllers
         private UserManager<ApplicationUser> _userManager;
         private readonly IFileService _fileUploadService;
         private IFollowsRepository _followsRepository;
+        private ILikesRepository _likesRepository;
 
         public HomeController(UserManager<ApplicationUser> userManager,
-            IPostsRepository postsRepository, IFileService fileUploadService, IFollowsRepository followsRepository)
+            IPostsRepository postsRepository, IFileService fileUploadService, 
+            IFollowsRepository followsRepository, ILikesRepository likesRepository)
         {
             _postsRepository = postsRepository;
             _userManager = userManager;
             _fileUploadService = fileUploadService;
             _followsRepository = followsRepository;
+            _likesRepository = likesRepository;
         }
 
 
@@ -83,23 +86,35 @@ namespace ThreadsASP.Controllers
         
 
         [HttpGet("{action}")]
-        public async Task<IActionResult> CreatePost(Post post)
+        public async Task<IActionResult> CreatePost(Post editPost, long? repostId)
         {
             var currentUser = await _userManager.GetUserAsync(User);
-            if (post?.Id != 0 && post.AppUserId == currentUser.Id)
+            var repost = await _postsRepository.Posts.FirstOrDefaultAsync(x => x.Id == repostId);
+            if (repost != null)
             {
-                post.AppUser = currentUser;
-                return View(post);
+                return View(new CreatePostViewModel
+                {
+                    NewPost = new Post { AppUser = currentUser },
+                    Repost = repost
+                });
             }
-            return View(new Post
+            if (editPost?.Id != 0 && editPost.AppUserId == currentUser.Id)
             {
-                AppUser = currentUser
+                editPost.AppUser = currentUser;
+                return View(new CreatePostViewModel
+                {
+                    NewPost = editPost
+                });
+            }
+            return View(new CreatePostViewModel
+            {
+                NewPost = new Post { AppUser =  currentUser }
             });
         }
 
 
         [HttpPost("{action}")]
-        public async Task<IActionResult> CreatePost(long? Id, string TextArea, IFormFile? file)
+        public async Task<IActionResult> CreatePost(long? editPostId, long? repostId, string TextArea, IFormFile? file)
         {
             if (ModelState.IsValid)
             {
@@ -108,30 +123,68 @@ namespace ThreadsASP.Controllers
                 {
                     await _fileUploadService.UploadPostImageAsync(file, newFileName);
                 }
-                var oldPost = _postsRepository.Posts.FirstOrDefault(p => p.Id == Id);
-                if (oldPost != null)
+                if (editPostId != 0)
                 {
+                    var oldPost = _postsRepository.Posts.FirstOrDefault(p => p.Id == editPostId);
                     LocalFileService.DeleteImage(oldPost.ImgName);
                     _postsRepository.DeletePost(oldPost);
-                    await CreatePostMethodAsync(TextArea, file, newFileName);
+                    await CreatePostMethodAsync(TextArea, file, newFileName, null);
                     return RedirectToAction("Index");
                 }
-                await CreatePostMethodAsync(TextArea, file, newFileName);
+                if (repostId != 0)
+                {
+                    var repost = _postsRepository.Posts.FirstOrDefault(r => r.Id == repostId);
+                    await CreatePostMethodAsync(TextArea, file, newFileName, repost);
+                    return RedirectToAction("Index");
+                }
+                await CreatePostMethodAsync(TextArea, file, newFileName, null);
                 return RedirectToAction("Index");
             }
             return View();
         }
 
+        [HttpPost]
+        public async Task<IActionResult> SendLike(long postId)
+        {
+            var post = await _postsRepository.Posts.FirstOrDefaultAsync(p => p.Id == postId);
+            var currentUser = await _userManager.GetUserAsync(User);
+            _likesRepository.AddLike(new Like
+            {
+                User = currentUser,
+                UserId = currentUser.Id,
+                Post = post,
+                PostId = post.Id
+            });
+            string jsCode = "<script>window.history.back();</script>";
+            return Content(jsCode, "text/html");
+        }
 
-        private async Task CreatePostMethodAsync(string TextArea, IFormFile? file, string newFileName)
+        [HttpPost]
+        public async Task<IActionResult> RemoveLike(long postId)
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+            var like = await _likesRepository.Likes.FirstOrDefaultAsync(x => x.UserId == currentUser.Id && x.PostId == postId);
+            var post = await _postsRepository.Posts.FirstOrDefaultAsync(p => p.Id == postId);
+            _likesRepository.RemoveLike(like);
+            string jsCode = "<script>window.history.back();</script>";
+            return Content(jsCode, "text/html");
+        }
+
+        private async Task CreatePostMethodAsync(string TextArea, IFormFile? file, string newFileName, Post? repost)
         {
             var newPost = new Post()
             {
                 AppUser = await _userManager.GetUserAsync(User),
                 Text = TextArea,
                 Date = DateTime.Now.ToString("MMMM dd"),
-                ImgName = (file != null) ? newFileName : null
+                ImgName = (file != null) ? newFileName : null,
+                Repost = repost,
+                RepostId = repost?.Id
             };
+            if (repost != null)
+            {
+                repost.RepostsCount++;
+            }
             _postsRepository.CreatePost(newPost);
         }
     }

@@ -8,6 +8,5 @@ namespace ThreadsASP.Models.Repositories
 
         void CreatePost(Post p);
         void DeletePost(Post p);
-        List<Post> GetUserPosts(string selectedUserId);
     }
 }

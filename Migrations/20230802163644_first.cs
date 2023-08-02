@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ThreadsASP.Migrations
 {
-    public partial class First : Migration
+    public partial class first : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -188,7 +188,9 @@ namespace ThreadsASP.Migrations
                     AppUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Text = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
                     Date = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ImgName = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    ImgName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RepostId = table.Column<long>(type: "bigint", nullable: true),
+                    RepostsCount = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -199,6 +201,33 @@ namespace ThreadsASP.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Posts_Posts_RepostId",
+                        column: x => x.RepostId,
+                        principalTable: "Posts",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Likes",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    PostId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Likes", x => new { x.UserId, x.PostId });
+                    table.ForeignKey(
+                        name: "FK_Likes_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Likes_Posts_PostId",
+                        column: x => x.PostId,
+                        principalTable: "Posts",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -246,9 +275,19 @@ namespace ThreadsASP.Migrations
                 column: "FollowerUserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Likes_PostId",
+                table: "Likes",
+                column: "PostId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Posts_AppUserId",
                 table: "Posts",
                 column: "AppUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Posts_RepostId",
+                table: "Posts",
+                column: "RepostId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -272,10 +311,13 @@ namespace ThreadsASP.Migrations
                 name: "Follows");
 
             migrationBuilder.DropTable(
-                name: "Posts");
+                name: "Likes");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Posts");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

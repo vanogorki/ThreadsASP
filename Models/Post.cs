@@ -16,5 +16,10 @@ namespace ThreadsASP.Models
         public string Text { get; set; } = string.Empty;
         public string Date { get; set; } = string.Empty;
         public string? ImgName { get; set; }
+        public bool IsReposted => RepostId != null;
+        public Post? Repost { get; set; }
+        public long? RepostId { get; set; }
+        public int RepostsCount { get; set; }
+        public ICollection<Like> Likes { get; set; }
     }
 }

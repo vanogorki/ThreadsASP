@@ -245,6 +245,21 @@ namespace ThreadsASP.Migrations
                     b.ToTable("Follows");
                 });
 
+            modelBuilder.Entity("ThreadsASP.Models.Like", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<long>("PostId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("UserId", "PostId");
+
+                    b.HasIndex("PostId");
+
+                    b.ToTable("Likes");
+                });
+
             modelBuilder.Entity("ThreadsASP.Models.Post", b =>
                 {
                     b.Property<long>("Id")
@@ -264,6 +279,12 @@ namespace ThreadsASP.Migrations
                     b.Property<string>("ImgName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<long?>("RepostId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("RepostsCount")
+                        .HasColumnType("int");
+
                     b.Property<string>("Text")
                         .IsRequired()
                         .HasMaxLength(300)
@@ -272,6 +293,8 @@ namespace ThreadsASP.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AppUserId");
+
+                    b.HasIndex("RepostId");
 
                     b.ToTable("Posts");
                 });
@@ -344,6 +367,23 @@ namespace ThreadsASP.Migrations
                     b.Navigation("FollowingUser");
                 });
 
+            modelBuilder.Entity("ThreadsASP.Models.Like", b =>
+                {
+                    b.HasOne("ThreadsASP.Models.Post", "Post")
+                        .WithMany("Likes")
+                        .HasForeignKey("PostId")
+                        .IsRequired();
+
+                    b.HasOne("ThreadsASP.Models.ApplicationUser", "User")
+                        .WithMany("SendLikes")
+                        .HasForeignKey("UserId")
+                        .IsRequired();
+
+                    b.Navigation("Post");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("ThreadsASP.Models.Post", b =>
                 {
                     b.HasOne("ThreadsASP.Models.ApplicationUser", "AppUser")
@@ -352,7 +392,13 @@ namespace ThreadsASP.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("ThreadsASP.Models.Post", "Repost")
+                        .WithMany()
+                        .HasForeignKey("RepostId");
+
                     b.Navigation("AppUser");
+
+                    b.Navigation("Repost");
                 });
 
             modelBuilder.Entity("ThreadsASP.Models.ApplicationUser", b =>
@@ -362,6 +408,13 @@ namespace ThreadsASP.Migrations
                     b.Navigation("ReceiveFollows");
 
                     b.Navigation("SendFollows");
+
+                    b.Navigation("SendLikes");
+                });
+
+            modelBuilder.Entity("ThreadsASP.Models.Post", b =>
+                {
+                    b.Navigation("Likes");
                 });
 #pragma warning restore 612, 618
         }
