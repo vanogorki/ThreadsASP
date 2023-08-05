@@ -126,19 +126,17 @@
                         }
                         @if (p.Likes.FirstOrDefault(x => x.UserId == Model.CurrentUserId) == null)
                         {
-                            <form method="post" class="like-form">
-                                <input type="hidden" name="postId" value="@p.Id" />
-                                <button type="submit" class="btn like fa-regular fa-heart" asp-action="SendLike" asp-controller="Home"></button>
+                            <div class="like-form">
+                                <button class="btn like fa-regular fa-heart" onclick="like(event, @p.Id, this);"></button>
                                 <p class="likes-count" style="display: @((p?.Likes.Count() != 0) ? "inline-block" : "none")">@p?.Likes.Count()</p>
-                            </form>
+                            </div>
                         }
                         else
                         {
-                            <form method="post" class="like-form">
-                                <input type="hidden" name="postId" value="@p.Id" />
-                                <button type="submit" class="btn unlike fa-solid fa-heart" asp-action="RemoveLike" asp-controller="Home"></button>
+                            <div class="like-form">
+                                <button class="btn unlike fa-solid fa-heart" onclick="like(event, @p.Id, this);"></button>
                                 <p class="likes-count liked" style="display: @((p?.Likes.Count() != 0) ? "inline-block" : "none")">@p?.Likes.Count()</p>
-                            </form>
+                            </div>
                         }
 
                         <form method="get" class="repost-form">

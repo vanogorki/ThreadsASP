@@ -34,6 +34,18 @@
         $(document).ready(function () {
             $("#SearchBarPartial").load('/Home/SearchBarPartial');
         });
+
+        function like(e, postId, btn) {
+
+            e.preventDefault();
+
+            $.ajax({
+                type: "POST",
+                url: "/Home/Like",
+                data: { "postId": postId },
+                success: btn.classList = (btn.classList == "btn unlike fa-solid fa-heart") ? "btn like fa-regular fa-heart" : "btn unlike fa-solid fa-heart"
+            });
+        }
     </script>
 </body>
 </html>

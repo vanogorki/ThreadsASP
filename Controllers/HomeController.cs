@@ -147,10 +147,16 @@ namespace ThreadsASP.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SendLike(long postId)
+        public async Task Like(long postId)
         {
             var post = await _postsRepository.Posts.FirstOrDefaultAsync(p => p.Id == postId);
             var currentUser = await _userManager.GetUserAsync(User);
+            var like = await _likesRepository.Likes.FirstOrDefaultAsync(x => x.UserId == currentUser.Id && x.PostId == postId);
+            if (like != null)
+            {
+                _likesRepository.RemoveLike(like);
+                return;
+            }
             _likesRepository.AddLike(new Like
             {
                 User = currentUser,
@@ -158,19 +164,6 @@ namespace ThreadsASP.Controllers
                 Post = post,
                 PostId = post.Id
             });
-            string jsCode = "<script>window.history.back();</script>";
-            return Content(jsCode, "text/html");
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> RemoveLike(long postId)
-        {
-            var currentUser = await _userManager.GetUserAsync(User);
-            var like = await _likesRepository.Likes.FirstOrDefaultAsync(x => x.UserId == currentUser.Id && x.PostId == postId);
-            var post = await _postsRepository.Posts.FirstOrDefaultAsync(p => p.Id == postId);
-            _likesRepository.RemoveLike(like);
-            string jsCode = "<script>window.history.back();</script>";
-            return Content(jsCode, "text/html");
         }
 
         [HttpGet]
