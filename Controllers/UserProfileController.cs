@@ -71,7 +71,7 @@ namespace ThreadsASP.Controllers
                 LocalFileService.DeleteImage(removePost.ImgName);
             }
             _postsRepository.DeletePost(removePost);
-            return Redirect($"http://localhost:5000/{accName}");
+            return Redirect($"/{accName}");
         }
 
         [HttpPost]
@@ -106,9 +106,9 @@ namespace ThreadsASP.Controllers
                 }
                 user.ProfileImgName = newFileName;
                 _userRepository.SaveNewProfileData();
-                return Json(new { Message = $"http://localhost:5000/{user.UserName}" });
+                return Json(new { Message = $"/{user.UserName}" });
             }
-            return Json(new { Message = $"http://localhost:5000/{user.UserName}" });
+            return Json(new { Message = $"/{user.UserName}" });
         }
 
         [HttpPost]
