@@ -73,6 +73,14 @@
                 }
 
                 <div class="footer">
+                    @if (Model.CurrentUser.Id != p.AppUserId)
+                    {
+                        <form method="get">
+                            <input type="hidden" value="@p.Id" name="reportedPostId" />
+                            <input type="hidden" value="@p.AppUserId" name="reportedUserId" />
+                            <button type="submit" class="btn fa-solid fa-flag" asp-action="Report" asp-controller="Home"></button>
+                        </form>
+                    }
                     @if (p.Likes.FirstOrDefault(x => x.UserId == Model.CurrentUser.Id) == null)
                     {
                         <form method="post" class="like-form">

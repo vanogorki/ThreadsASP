@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-
-namespace ThreadsASP.Models.ViewModels
+﻿namespace ThreadsASP.Models.ViewModels
 {
     public class UserPageViewModel
     {

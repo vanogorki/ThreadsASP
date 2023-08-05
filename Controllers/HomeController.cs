@@ -18,16 +18,19 @@ namespace ThreadsASP.Controllers
         private readonly IFileService _fileUploadService;
         private IFollowsRepository _followsRepository;
         private ILikesRepository _likesRepository;
+        private IReportsRepository _reportsRepository;
 
         public HomeController(UserManager<ApplicationUser> userManager,
             IPostsRepository postsRepository, IFileService fileUploadService, 
-            IFollowsRepository followsRepository, ILikesRepository likesRepository)
+            IFollowsRepository followsRepository, ILikesRepository likesRepository,
+            IReportsRepository reportsRepository)
         {
             _postsRepository = postsRepository;
             _userManager = userManager;
             _fileUploadService = fileUploadService;
             _followsRepository = followsRepository;
             _likesRepository = likesRepository;
+            _reportsRepository = reportsRepository;
         }
 
 
@@ -168,6 +171,37 @@ namespace ThreadsASP.Controllers
             _likesRepository.RemoveLike(like);
             string jsCode = "<script>window.history.back();</script>";
             return Content(jsCode, "text/html");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Report(string reportedUserId, long? reportedPostId)
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+            var reportedUser = await _userManager.FindByIdAsync(reportedUserId);
+            var reportedPost = await _postsRepository.Posts.FirstOrDefaultAsync(x => x.Id == reportedPostId);
+            return View(new Report
+            {
+                ReportedPost = reportedPost,
+                ReportedUser = reportedUser,
+                ReportSender = currentUser
+            });
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> Report(string reportedUserId, long? reportedPostId, string message)
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+            var reportedUser = await _userManager.FindByIdAsync(reportedUserId);
+            var reportedPost = await _postsRepository.Posts.FirstOrDefaultAsync(x => x.Id == reportedPostId);
+            _reportsRepository.AddReport(new Report
+            {
+                ReportSender = currentUser,
+                ReportedUser = reportedUser,
+                ReportedPost = reportedPost,
+                Message = message
+            });
+            return RedirectToAction("Index");
         }
 
         private async Task CreatePostMethodAsync(string TextArea, IFormFile? file, string newFileName, Post? repost)

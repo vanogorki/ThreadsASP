@@ -1,0 +1,52 @@
+﻿@model List<Post>
+@{
+    Layout = "_AdminLayout";
+}
+
+<h2 class="page-title">Manage Posts</h2>
+
+<table>
+    <thead>
+        <th>Id</th>
+        <th>Author</th>
+        <th>Text</th>
+        <th>Date</th>
+        <th>Image</th>
+        <th>Reposts Count</th>
+        <th>Likes Count</th>
+        <th>Reposted Post Id</th>
+        <th>Action</th>
+    </thead>
+
+    <tbody>
+
+        @foreach (var p in Model ?? Enumerable.Empty<Post>())
+        {
+            <tr>
+                <td>@p.Id</td>
+                <td>@p.AppUser.UserName</td>
+                <td style="max-width: 200px; word-break: break-word;">@p.Text</td>
+                <td>@p.Date</td>
+                <td>
+                    @if (p.ImgName != null)
+                    {
+                        <a href="/images/@p.ImgName">Path</a>
+                    }
+                    else
+                    {
+                        <p>-</p>
+                    }
+                </td>
+                <td>@p.RepostsCount</td>
+                <td>@p.Likes.Count()</td>
+                <td>@((p.RepostId != null) ? p.RepostId : "-")</td>
+                <td>
+                    <form method="post">
+                        <input type="hidden" name="postId" value="@p.Id" />
+                        <button type="submit" class="btn delete" asp-action="DeletePost">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

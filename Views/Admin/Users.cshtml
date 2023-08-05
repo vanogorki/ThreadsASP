@@ -1,0 +1,50 @@
+﻿@model List<ApplicationUser>
+@{
+    Layout = "_AdminLayout";
+}
+
+<h2 class="page-title">Manage Users</h2>
+
+<table>
+    <thead>
+        <th>Id</th>
+        <th>Username</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Profile Image</th>
+        <th>Email</th>
+        <th>Blocked?</th>
+        <th>Action</th>
+    </thead>
+
+    <tbody>
+        @foreach (var u in Model ?? Enumerable.Empty<ApplicationUser>())
+        {
+            <tr>
+                <td>@u.Id</td>
+                <td>@u.UserName</td>
+                <td>@u.FirstName</td>
+                <td>@u.LastName</td>
+                <td><a href="/images/@u.ProfileImgName">Path</a></td>
+                <td>@u.Email</td>
+                <td>@u.IsBlocked</td>
+                <td>
+                    @if (u.IsBlocked == false)
+                    {
+                        <form method="post">
+                            <input type="hidden" name="userId" value="@u.Id" />
+                            <button type="submit" class="btn delete" asp-action="BlockUser">Block</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <form method="post">
+                            <input type="hidden" name="userId" value="@u.Id" />
+                            <button type="submit" class="btn unblock" asp-action="UnBlockUser">Unblock</button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

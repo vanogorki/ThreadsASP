@@ -1,0 +1,92 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    height: 100vh;
+    overflow: hidden;
+}
+
+header {
+    height: 60px;
+    color: white;
+    background-color: #5656ff;
+}
+
+    header h2 {
+        padding: 10px 10px 10px 40px;
+        font-size: 40px;
+    }
+
+.admin-container {
+    display: flex;
+    height: calc(100% - 60px);
+}
+
+    .admin-container .left-sidebar {
+        flex: 2;
+        height: 100%;
+        background-color: #3d778a;
+    }
+
+        .admin-container .left-sidebar ul li a {
+            text-decoration: none;
+            color: white;
+            padding: 18px;
+            display: block;
+            border-bottom: 1px solid #272781;
+        }
+
+            .admin-container .left-sidebar ul li a:hover {
+                background-color: #272781;
+            }
+
+    .admin-container .admin-content {
+        flex: 8;
+        height: 100%;
+        padding: 40px 100px 100px;
+        overflow-y: auto;
+    }
+
+.admin-content .page-title {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.admin-container table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1.1rem;
+}
+
+    .admin-container table th, td {
+        padding: 15px;
+        text-align: center;
+        border-bottom: 1px solid #d3d3d3;
+    }
+
+.btn {
+    border: 0;
+    background-color: white;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+    .btn.delete {
+        color: red;
+    }
+
+        .btn.delete:hover {
+            text-decoration: underline;
+        }
+
+    .btn.unblock {
+        color: cadetblue;
+    }
+
+        .btn.unblock:hover {
+            text-decoration: underline;
+        }

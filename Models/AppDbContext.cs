@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Emit;
 
 namespace ThreadsASP.Models
 {
@@ -27,13 +25,13 @@ namespace ThreadsASP.Models
                 .HasOne(x => x.FollowingUser)
                 .WithMany(z => z.SendFollows)
                 .HasForeignKey(k => k.FollowingUserId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                .OnDelete(DeleteBehavior.ClientCascade);
 
             builder.Entity<Follow>()
                 .HasOne(x => x.FollowerUser)
                 .WithMany(z => z.ReceiveFollows)
                 .HasForeignKey(k => k.FollowerUserId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                .OnDelete(DeleteBehavior.ClientCascade);
 
             builder.Entity<Like>()
                 .HasKey(x => new { x.UserId, x.PostId });
@@ -42,17 +40,18 @@ namespace ThreadsASP.Models
                 .HasOne(u => u.User)
                 .WithMany(l => l.SendLikes)
                 .HasForeignKey(k => k.UserId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                .OnDelete(DeleteBehavior.ClientCascade);
 
             builder.Entity<Like>()
                 .HasOne(p => p.Post)
                 .WithMany(l => l.Likes)
                 .HasForeignKey(k => k.PostId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                .OnDelete(DeleteBehavior.ClientCascade);
         }
 
         public DbSet<Post> Posts { get; set; }
         public DbSet<Follow> Follows { get; set; }
         public DbSet<Like> Likes { get; set; }
+        public DbSet<Report> Reports { get; set; }
     }
 }

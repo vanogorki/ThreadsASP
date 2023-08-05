@@ -1,6 +1,4 @@
-﻿using ThreadsASP.Models;
-
-namespace ThreadsASP.Models.Repositories
+﻿namespace ThreadsASP.Models.Repositories
 {
     public interface IPostsRepository
     {

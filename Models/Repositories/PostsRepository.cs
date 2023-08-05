@@ -15,13 +15,6 @@ namespace ThreadsASP.Models.Repositories
 
         public void DeletePost(Post p)
         {
-            if (p.Likes.Count() != 0)
-            {
-                foreach (var likes in p.Likes)
-                {
-                    _context.Remove(likes);
-                }
-            }
             if (Posts.Where(x => x.RepostId == p.Id) != null)
             {
                 foreach (var repost in Posts.Where(x => x.RepostId == p.Id))

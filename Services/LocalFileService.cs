@@ -1,6 +1,4 @@
-﻿
-
-namespace ThreadsASP.FileUploadService
+﻿namespace ThreadsASP.FileUploadService
 {
     public class LocalFileService : IFileService
     {

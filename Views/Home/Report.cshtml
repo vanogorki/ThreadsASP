@@ -1,0 +1,26 @@
+﻿@model Report
+@{
+    ViewBag.Title = "Create Post";
+}
+
+<div class="main-body__border" style="border-bottom: 1px solid #E1E8ED;">
+    <div class="page-header">
+        <h2>Report</h2>
+    </div>
+
+    <div class="bweep-box">
+        <form method="post">
+            <div class="user-input">
+                <img src="/images/@Model.ReportSender.ProfileImgName" onclick="location.href='/@Model.ReportSender.UserName';" />
+                <textarea type="text" placeholder="Write report message" required maxlength="50"
+                          name="message" autofocus></textarea>
+            </div>
+
+            <div style="display: flex">
+                <input type="hidden" value="@Model.ReportedUser?.Id" name="reportedUserId" />
+                <input type="hidden" value="@Model.ReportedPost?.Id" name="reportedPostId" />
+                <button type="submit" class="bweep-button" asp-action="Report">Bweep</button>
+            </div>
+        </form>
+    </div>
+</div>

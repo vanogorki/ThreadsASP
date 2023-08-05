@@ -1,0 +1,37 @@
+﻿@model List<Report>
+@{
+    Layout = "_AdminLayout";
+}
+
+<h2 class="page-title">Manage Reports</h2>
+
+<table>
+    <thead>
+        <th>Id</th>
+        <th>Report Sender</th>
+        <th>Message</th>
+        <th>Reported Post Id</th>
+        <th>Reported User</th>
+        <th>Action</th>
+    </thead>
+
+    <tbody>
+
+        @foreach (var r in Model ?? Enumerable.Empty<Report>())
+        {
+            <tr>
+                <td>@r.Id</td>
+                <td>@r.ReportSender.UserName</td>
+                <td>@r.Message</td>
+                <td>@((r.ReportedPost?.Id != null ? r.ReportedPost.Id : "-"))</td>
+                <td>@r.ReportedUser.UserName</td>
+                <td>
+                    <form method="post">
+                        <input type="hidden" name="reportId" value="@r.Id" />
+                        <button type="submit" class="btn delete" asp-action="DeleteReport">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -12,7 +12,7 @@ using ThreadsASP.Models;
 namespace ThreadsASP.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230802163644_first")]
+    [Migration("20230804170854_first")]
     partial class first
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -179,6 +179,9 @@ namespace ThreadsASP.Migrations
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsBlocked")
+                        .HasColumnType("bit");
+
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
 
@@ -301,6 +304,38 @@ namespace ThreadsASP.Migrations
                     b.ToTable("Posts");
                 });
 
+            modelBuilder.Entity("ThreadsASP.Models.Report", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ReportSenderId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<long?>("ReportedPostId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("ReportedUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReportSenderId");
+
+                    b.HasIndex("ReportedPostId");
+
+                    b.HasIndex("ReportedUserId");
+
+                    b.ToTable("Reports");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -357,11 +392,13 @@ namespace ThreadsASP.Migrations
                     b.HasOne("ThreadsASP.Models.ApplicationUser", "FollowerUser")
                         .WithMany("ReceiveFollows")
                         .HasForeignKey("FollowerUserId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
                     b.HasOne("ThreadsASP.Models.ApplicationUser", "FollowingUser")
                         .WithMany("SendFollows")
                         .HasForeignKey("FollowingUserId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
                     b.Navigation("FollowerUser");
@@ -374,11 +411,13 @@ namespace ThreadsASP.Migrations
                     b.HasOne("ThreadsASP.Models.Post", "Post")
                         .WithMany("Likes")
                         .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
                     b.HasOne("ThreadsASP.Models.ApplicationUser", "User")
                         .WithMany("SendLikes")
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
                     b.Navigation("Post");
@@ -401,6 +440,27 @@ namespace ThreadsASP.Migrations
                     b.Navigation("AppUser");
 
                     b.Navigation("Repost");
+                });
+
+            modelBuilder.Entity("ThreadsASP.Models.Report", b =>
+                {
+                    b.HasOne("ThreadsASP.Models.ApplicationUser", "ReportSender")
+                        .WithMany()
+                        .HasForeignKey("ReportSenderId");
+
+                    b.HasOne("ThreadsASP.Models.Post", "ReportedPost")
+                        .WithMany()
+                        .HasForeignKey("ReportedPostId");
+
+                    b.HasOne("ThreadsASP.Models.ApplicationUser", "ReportedUser")
+                        .WithMany()
+                        .HasForeignKey("ReportedUserId");
+
+                    b.Navigation("ReportSender");
+
+                    b.Navigation("ReportedPost");
+
+                    b.Navigation("ReportedUser");
                 });
 
             modelBuilder.Entity("ThreadsASP.Models.ApplicationUser", b =>

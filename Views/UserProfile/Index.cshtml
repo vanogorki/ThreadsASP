@@ -43,6 +43,10 @@
                         <button class="btn unfollow" asp-action="UnFollow" asp-controller="UserProfile">Following</button>
                     </form>
                 }
+                <form method="get">
+                    <input type="hidden" value="@Model.SelectedUser.Id" name="reportedUserId" />
+                    <button style="margin-top: 10px;" type="submit" asp-action="Report" asp-controller="Home" class="report-btn fa-regular fa-flag"></button>
+                </form>
             }
         </div>
         <div>
@@ -127,6 +131,14 @@
                 }
 
                 <div class="footer">
+                    @if (Model.CurrentUser.Id != p.AppUserId)
+                    {
+                        <form method="get">
+                            <input type="hidden" value="@p.Id" name="reportedPostId" />
+                            <input type="hidden" value="@p.AppUserId" name="reportedUserId" />
+                            <button type="submit" asp-action="Report" asp-controller="Home" class="btn fa-regular fa-flag"></button>
+                        </form>
+                    }
                     @if (p.Likes.FirstOrDefault(x => x.UserId == Model.CurrentUser.Id) == null)
                     {
                         <form method="post" class="like-form">

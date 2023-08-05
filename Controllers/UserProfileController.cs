@@ -38,6 +38,10 @@ namespace ThreadsASP.Controllers
             {
                 return NotFound();
             }
+            if (selectedUser.IsBlocked == true)
+            {
+                return View("Blocked", selectedUser.UserName);
+            }
             return View(new UserPageViewModel
             {
                 Posts = await _postsRepository.Posts.Where(x => x.AppUserId == selectedUser.Id).OrderByDescending(i => i.Id).ToListAsync(),

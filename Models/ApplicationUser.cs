@@ -7,9 +7,8 @@ namespace ThreadsASP.Models
     {
         public string? FirstName { get; set; }
         public string? LastName { get; set; } 
-        public string ProfileImgName { get; set; } = 
-            
-            "Default.jpg";
+        public string ProfileImgName { get; set; } = "Default.jpg";
+        public bool IsBlocked { get; set; } = false;
         public ICollection<Post> Posts { get; set; }
         public ICollection<Follow> SendFollows { get; set; }
         public ICollection<Follow> ReceiveFollows { get; set; }

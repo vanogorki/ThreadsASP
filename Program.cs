@@ -4,7 +4,6 @@ using ThreadsASP.Models;
 using ThreadsASP.FileUploadService;
 using ThreadsASP.Models.Repositories;
 using ThreadsASP.Services;
-using Microsoft.Extensions.FileSystemGlobbing.Internal.Patterns;
 
 namespace ThreadsASP
 {
@@ -27,6 +26,8 @@ namespace ThreadsASP
             builder.Services.AddScoped<IFileService, LocalFileService>();
 
             builder.Services.AddScoped<ILikesRepository, LikesRepository>();
+
+            builder.Services.AddScoped<IReportsRepository, ReportsRepository>();
 
             builder.Services.AddScoped<EmailService>();
 
@@ -66,6 +67,8 @@ namespace ThreadsASP
                 .GetRequiredService<AppDbContext>();
 
             context.Database.Migrate();
+
+            IdentitySeedData.CreateAdminAccount(app.Services, app.Configuration);
 
             app.Run();
         }

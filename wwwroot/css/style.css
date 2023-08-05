@@ -61,7 +61,6 @@ body {
 /*media section*/
 
 
-
 @media screen and (min-width: 1301px) {
     .sidebar {
         flex: 0.2;
@@ -468,13 +467,18 @@ body {
         .post .footer .btn {
             background: 0;
             border-radius: 50%;
-            border: 0;
+            border: none;
             width: 40px;
             height: 40px;
             cursor: pointer;
             font-size: 16px;
             transition: background-color 150ms ease-out;
         }
+
+            .post .footer .btn.fa-flag:hover {
+                color: red;
+                background-color: #facfcf;
+            }
 
         .post .footer .like-form {
             margin: 0 20px;
@@ -486,10 +490,10 @@ body {
                 color: #f556bf;
             }
 
-        .post .footer .like-form:hover .btn.like {
-            color: #f556bf;
-            background-color: #ffdef4;
-        }
+                .post .footer .like-form:hover .btn.like {
+                    color: #f556bf;
+                    background-color: #ffdef4;
+                }
 
         .post .footer .btn.unlike {
             color: #ff187d;
@@ -724,54 +728,81 @@ body {
         cursor: pointer;
     }
 
-        .profile-info .btn.edit {
-            background-color: white;
-            border: 1px solid var(--threads-background-color);
-            color: black;
-        }
-
-            .profile-info .btn.edit:hover {
-                background-color: var(--threads-background-color);
-            }
-
-        .profile-info .btn.follow {
-            background-color: black;
-            border: none;
-            color: white;
-        }
-
-            .profile-info .btn.follow:hover {
-                background-color: #333333;
-            }
-
-        .profile-info .btn.unfollow {
-            background-color: white;
-            border: 1px solid var(--threads-background-color);
-            color: black;
-        }
-
-            .profile-info .btn.unfollow:hover {
-                font-size: 0;
-                background-color: #ffbfbd;
-                border: 1px solid crimson;
-            }
-
-                .profile-info .btn.unfollow:hover:after {
-                    color: crimson;
-                    font-size: 15px;
-                    content: "Unfollow";
-                }
-
-    .profile-info .username {
-        font-size: 15px;
-        font-weight: 300;
-        color: gray;
+    .profile-info .report-btn {
+        background: 0;
+        border-radius: 50%;
+        border: none;
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 150ms ease-out;
     }
 
-    .profile-info .follows-count {
-        font-size: 14px;
-        font-weight: 300;
+        .profile-info .report-btn:hover {
+            color: red;
+            background-color: #facfcf;
+        }
+
+    .profile-info .btn.edit {
+        background-color: white;
+        border: 1px solid var(--threads-background-color);
+        color: black;
     }
+
+        .profile-info .btn.edit:hover {
+            background-color: var(--threads-background-color);
+        }
+
+    .profile-info .btn.follow {
+        background-color: black;
+        border: none;
+        color: white;
+    }
+
+        .profile-info .btn.follow:hover {
+            background-color: #333333;
+        }
+
+    .profile-info .btn.unfollow {
+        background-color: white;
+        border: 1px solid var(--threads-background-color);
+        color: black;
+    }
+
+        .profile-info .btn.unfollow:hover {
+            font-size: 0;
+            background-color: #ffbfbd;
+            border: 1px solid crimson;
+        }
+
+            .profile-info .btn.unfollow:hover:after {
+                color: crimson;
+                font-size: 15px;
+                content: "Unfollow";
+            }
+
+button .report {
+    background: 0;
+    border-radius: 50%;
+    border: 0;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 150ms ease-out;
+}
+
+.profile-info .username {
+    font-size: 15px;
+    font-weight: 300;
+    color: gray;
+}
+
+.profile-info .follows-count {
+    font-size: 14px;
+    font-weight: 300;
+}
 
 
 

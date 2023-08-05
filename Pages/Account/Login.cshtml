@@ -35,10 +35,10 @@
 
         [BindProperty]
         public string UserName { get; set; } = string.Empty;
-        
+
         [BindProperty]
         public string Password { get; set; } = string.Empty;
-        
+
         [BindProperty(SupportsGet = true)]
         public string? ReturnUrl { get; set; }
 
@@ -51,6 +51,11 @@
                 var user = await _UserManager.FindByNameAsync(UserName);
                 if (user != null)
                 {
+                    if (user.IsBlocked == true)
+                    {
+                        ModelState.AddModelError("", "Your account is blocked. Contact support for more information threadsasp@gmail.com");
+                        return Page();
+                    }
                     if (!await _UserManager.IsEmailConfirmedAsync(user))
                     {
                         ModelState.AddModelError("", "You didn't verify your email");
