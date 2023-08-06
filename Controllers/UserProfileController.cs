@@ -54,7 +54,6 @@ namespace ThreadsASP.Controllers
             });
         }
 
-        [HttpPost]
         public IActionResult DeletePost(long Id, string accName)
         {
             var removePost = _postsRepository.Posts.FirstOrDefault(p => p.Id == Id);
@@ -66,23 +65,9 @@ namespace ThreadsASP.Controllers
             {
                 removePost.Repost.RepostsCount--;
             }
-            if (_userManager.Users.FirstOrDefault(u => u.ProfileImgName == removePost.ImgName) == null)
-            {
-                LocalFileService.DeleteImage(removePost.ImgName);
-            }
+            LocalFileService.DeleteImage(removePost.ImgName);
             _postsRepository.DeletePost(removePost);
             return Redirect($"http://localhost:5000/{accName}");
-        }
-
-        [HttpPost]
-        public IActionResult EditPost(long? Id)
-        {
-            var editPost = _postsRepository.Posts.FirstOrDefault(p => p.Id == Id);
-            if (editPost == null)
-            {
-                return NotFound();
-            }
-            return RedirectToAction("CreatePost", "Home", editPost);
         }
 
         [Route("{action}")]
@@ -112,24 +97,61 @@ namespace ThreadsASP.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Follow(string selectedUserId)
+        public async Task Follow(string selectedUserId)
         {
             var selectedUser = await _userManager.FindByIdAsync(selectedUserId);
             var currentUser = await _userManager.GetUserAsync(User);
-            _followsRepository.Follow(currentUser, selectedUser);
-            string jsCode = "<script>window.history.back();</script>";
-            return Content(jsCode, "text/html");
+            var unFollow = await _followsRepository.Follows.FirstOrDefaultAsync(x => x.FollowingUserId == currentUser.Id && x.FollowerUserId == selectedUser.Id);
+            if (unFollow != null)
+            {
+                _followsRepository.UnFollow(unFollow);
+                return;
+            }
+            _followsRepository.Follow(new Follow
+            {
+                FollowerUser = selectedUser,
+                FollowerUserId = selectedUserId,
+                FollowingUser = currentUser,
+                FollowingUserId = selectedUserId
+            });
         }
 
-        [HttpPost]
-        public async Task<IActionResult> UnFollow(string selectedUserId)
+        [Route("{accName}/{action}")]
+        public async Task<IActionResult> Followers(string accName)
         {
-            var selectedUser = await _userManager.FindByIdAsync(selectedUserId);
             var currentUser = await _userManager.GetUserAsync(User);
-            var unFollow = _followsRepository.Follows.Where(x => x.FollowingUserId == currentUser.Id && x.FollowerUserId == selectedUser.Id).FirstOrDefault();
-            _followsRepository.UnFollow(unFollow);
-            string jsCode = "<script>window.history.back();</script>";
-            return Content(jsCode, "text/html");
+            var selectedUser = await _userManager.FindByNameAsync(accName);
+            var currentUserFollows = await _followsRepository.Follows.Where(x => x.FollowingUserId == currentUser.Id).ToListAsync();
+
+            var followersList = await _userManager.Users.Where(u => _followsRepository.Follows.Where(
+                x => x.FollowerUserId == selectedUser.Id).Select(c => c.FollowingUserId).Contains(u.Id)).ToListAsync();
+
+            return View("FollowList", new FollowListViewModel
+            {
+                Users = followersList,
+                SelectedUser = selectedUser,
+                CurrentUser = currentUser,
+                CurrentUserFollows = currentUserFollows
+            });
+        }
+
+        [Route("{accName}/{action}")]
+        public async Task<IActionResult> Following(string accName)
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+            var selectedUser = await _userManager.FindByNameAsync(accName);
+            var currentUserFollows = await _followsRepository.Follows.Where(x => x.FollowingUserId == currentUser.Id).ToListAsync();
+
+            var followingList = await _userManager.Users.Where(u => _followsRepository.Follows.Where(
+                x => x.FollowingUserId == selectedUser.Id).Select(c => c.FollowerUserId).Contains(u.Id)).ToListAsync();
+
+            return View("FollowList", new FollowListViewModel
+            {
+                Users = followingList,
+                SelectedUser = selectedUser,
+                CurrentUser = currentUser,
+                CurrentUserFollows = currentUserFollows
+            });
         }
     }
 }

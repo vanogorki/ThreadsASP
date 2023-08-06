@@ -80,27 +80,27 @@
                             <form method="get">
                                 <input type="hidden" value="@p.Id" name="reportedPostId" />
                                 <input type="hidden" value="@p.AppUserId" name="reportedUserId" />
-                                <button type="submit" class="btn fa-solid fa-flag" asp-action="Report" asp-controller="Home"></button>
+                                <button type="submit" asp-action="Report" asp-controller="Home" class="footer-btn fa-regular fa-flag"></button>
                             </form>
                         }
                         @if (p.Likes.FirstOrDefault(x => x.UserId == Model.CurrentUser.Id) == null)
                         {
                             <div class="like-form">
-                                <button class="btn like fa-regular fa-heart" onclick="like(event, @p.Id, this);"></button>
+                                <button class="footer-btn like fa-regular fa-heart" onclick="like(event, @p.Id, this);"></button>
                                 <p class="likes-count" style="display: @((p?.Likes.Count() != 0) ? "inline-block" : "none")">@p?.Likes.Count()</p>
                             </div>
                         }
                         else
                         {
                             <div class="like-form">
-                                <button class="btn unlike fa-solid fa-heart" onclick="like(event, @p.Id, this);"></button>
+                                <button class="footer-btn unlike fa-solid fa-heart" onclick="like(event, @p.Id, this);"></button>
                                 <p class="likes-count liked" style="display: @((p?.Likes.Count() != 0) ? "inline-block" : "none")">@p?.Likes.Count()</p>
                             </div>
                         }
 
                         <form method="get" class="repost-form">
                             <input type="hidden" name="repostId" value="@p.Id" />
-                            <button asp-action="CreatePost" asp-controller="Home" class="btn fa-solid fa-retweet">
+                            <button asp-action="CreatePost" asp-controller="Home" class="footer-btn fa-solid fa-retweet">
                             </button>
                             <p class="reposts-count" style="display: @((p?.RepostsCount != 0) ? "inline-block" : "none")">@p?.RepostsCount</p>
                         </form>

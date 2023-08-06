@@ -1,0 +1,53 @@
+﻿@model FollowListViewModel
+
+<div class="main-body__border">
+
+    <div class="profile-header">
+        <h2>
+            @Model.SelectedUser?.FirstName @Model.SelectedUser?.LastName
+            <span class="material-symbols-outlined verified-icon">
+                verified
+            </span>
+            <br />
+            <span class="bweeps-count">@@@Model.SelectedUser?.UserName</span>
+        </h2>
+    </div>
+
+    <div class="change-list_btns">
+        <a href="/@Model.SelectedUser.UserName/Followers">Followers</a>
+        <a href="/@Model.SelectedUser.UserName/Following">Following</a>
+    </div>
+
+    @foreach (var f in Model.Users ?? Enumerable.Empty<ApplicationUser>())
+    {
+        <div class="find-user" style="padding-left: 5px; border-radius: 0; border-bottom: 1px solid #E1E8ED;" onclick="redirectToUser(event, '@f.UserName');">
+            <div class="info">
+                <div class="avatar">
+                    <img src="/images/@f.ProfileImgName" />
+                </div>
+                <h4>
+                    <span>@f.FirstName @f.LastName</span>
+                    <span class="material-symbols-outlined verified-icon">
+                        verified
+                    </span>
+                    <br />
+                    <span class="username">@@@f.UserName</span>
+                </h4>
+            </div>
+            @if (f.Id != Model.CurrentUser.Id &&
+           Model.CurrentUserFollows.FirstOrDefault(s => s.FollowerUserId == f.Id) == null)
+            {
+                <div class="follow-btn">
+                    <button style="width: 90px; margin: 0; padding: 0;" class="btn follow" onclick="follow(event, '@f.Id', this);"></button>
+                </div>
+            }
+            @if (f.Id != Model.CurrentUser.Id &&
+           Model.CurrentUserFollows.FirstOrDefault(s => s.FollowerUserId == f.Id) != null)
+            {
+                <div class="follow-btn">
+                    <button style="width: 90px; margin: 0; padding: 0;" class="btn unfollow" onclick="follow(event, '@f.Id', this);"></button>
+                </div>
+            }
+        </div>
+    }
+</div>

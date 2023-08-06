@@ -43,7 +43,20 @@
                 type: "POST",
                 url: "/Home/Like",
                 data: { "postId": postId },
-                success: btn.classList = (btn.classList == "btn unlike fa-solid fa-heart") ? "btn like fa-regular fa-heart" : "btn unlike fa-solid fa-heart"
+                success: btn.classList = (btn.classList == "footer-btn unlike fa-solid fa-heart") ? "footer-btn like fa-regular fa-heart" : "footer-btn unlike fa-solid fa-heart"
+            });
+        }
+
+        function follow(e, selectedUserId, btn) {
+            e.stopPropagation();
+
+            e.preventDefault();
+
+            $.ajax({
+                type: "POST",
+                url: "/UserProfile/Follow",
+                data: { "selectedUserId": selectedUserId },
+                success: btn.classList = (btn.classList == "btn follow") ? "btn unfollow" : "btn follow"
             });
         }
     </script>

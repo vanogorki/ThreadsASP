@@ -22,31 +22,29 @@
 
             @if (Model.IsCurrentUser == true)
             {
-                <button onclick="location.href='/Account/Editor/@Model.SelectedUser?.Id';"
-                        class="btn edit">
-                    Edit profile
-                </button>
+                <div style="display: flex; justify-content: flex-end; margin-top: 50px; width: 100%;">
+                    <button onclick="location.href='/Account/Editor/@Model.SelectedUser?.Id';"
+                            class="btn edit">
+                        Edit profile
+                    </button>
+                </div>
             }
             else
             {
-                @if (!Model.IsFollowing)
-                {
-                    <form method="post">
-                        <input type="hidden" name="selectedUserId" value="@Model.SelectedUser?.Id" />
-                        <button class="btn follow" asp-action="Follow" asp-controller="UserProfile">Follow</button>
+                <div style="display: flex; justify-content: flex-end; margin-top: 50px; width: 100%;">
+                    <form method="get" style="margin-right: 10px;">
+                        <input type="hidden" value="@Model.SelectedUser.Id" name="reportedUserId" />
+                        <button type="submit" asp-action="Report" asp-controller="Home" class="report-btn fa-regular fa-flag"></button>
                     </form>
-                }
-                else
-                {
-                    <form method="post">
-                        <input type="hidden" name="selectedUserId" value="@Model.SelectedUser?.Id" />
-                        <button class="btn unfollow" asp-action="UnFollow" asp-controller="UserProfile">Following</button>
-                    </form>
-                }
-                <form method="get">
-                    <input type="hidden" value="@Model.SelectedUser.Id" name="reportedUserId" />
-                    <button style="margin-top: 10px;" type="submit" asp-action="Report" asp-controller="Home" class="report-btn fa-regular fa-flag"></button>
-                </form>
+                    @if (!Model.IsFollowing)
+                    {
+                        <button class="btn follow" onclick="follow(event, '@Model.SelectedUser?.Id', this);"></button>
+                    }
+                    else
+                    {
+                        <button class="btn unfollow" onclick="follow(event, '@Model.SelectedUser?.Id', this);"></button>
+                    }
+                </div>
             }
         </div>
         <div>
@@ -59,8 +57,9 @@
                 <span class="username">@@@Model.SelectedUser?.UserName</span>
                 <br />
                 <span class="follows-count">
-                    @((Model.FollowingCount != null) ? Model.FollowingCount : "0")  Following
-                    &emsp; @((Model.FollowersCount != null) ? Model.FollowersCount : "0") Followers
+                    <span onclick="location.href='@Model.SelectedUser.UserName/Following';">@((Model.FollowingCount != null) ? Model.FollowingCount : "0")  Following</span>
+                    
+                    &emsp; <span onclick="location.href='@Model.SelectedUser.UserName/Followers';">@((Model.FollowersCount != null) ? Model.FollowersCount : "0") Followers</span>
                 </span>
             </h2>
         </div>
@@ -136,38 +135,38 @@
                         <form method="get">
                             <input type="hidden" value="@p.Id" name="reportedPostId" />
                             <input type="hidden" value="@p.AppUserId" name="reportedUserId" />
-                            <button type="submit" asp-action="Report" asp-controller="Home" class="btn fa-regular fa-flag"></button>
+                            <button type="submit" asp-action="Report" asp-controller="Home" class="footer-btn fa-regular fa-flag"></button>
                         </form>
                     }
                     @if (p.Likes.FirstOrDefault(x => x.UserId == Model.CurrentUser.Id) == null)
                     {
                         <div class="like-form">
-                            <button class="btn like fa-regular fa-heart" onclick="like(event, @p.Id, this);"></button>
+                            <button class="footer-btn like fa-regular fa-heart" onclick="like(event, @p.Id, this);"></button>
                             <p class="likes-count" style="display: @((p?.Likes.Count() != 0) ? "inline-block" : "none")">@p?.Likes.Count()</p>
                         </div>
                     }
                     else
                     {
                         <div class="like-form">
-                            <button class="btn unlike fa-solid fa-heart" onclick="like(event, @p.Id, this);"></button>
+                            <button class="footer-btn unlike fa-solid fa-heart" onclick="like(event, @p.Id, this);"></button>
                             <p class="likes-count liked" style="display: @((p?.Likes.Count() != 0) ? "inline-block" : "none")">@p?.Likes.Count()</p>
                         </div>
                     }
 
                     <form method="get" class="repost-form">
                         <input type="hidden" name="repostId" value="@p.Id" />
-                        <button asp-action="CreatePost" asp-controller="Home" class="btn fa-solid fa-retweet">
+                        <button asp-action="CreatePost" asp-controller="Home" class="footer-btn fa-solid fa-retweet">
                         </button>
                         <p class="reposts-count" style="display: @((p?.RepostsCount != 0) ? "inline-block" : "none")">@p?.RepostsCount</p>
                     </form>
 
-                    <form method="post" style="display: @(Model?.IsCurrentUser == true ? "flex" : "none");">
-                        <input name="Id" value="@p.Id" type="hidden" />
+                    <form style="display: @(Model?.IsCurrentUser == true ? "flex" : "none");">
+                        <input name="editPostId" value="@p.Id" type="hidden" />
                         <input name="accName" value="@p.AppUser?.UserName" type="hidden" />
-                        <button type="submit" asp-action="EditPost" class="material-symbols-outlined owner edit-icon">
+                        <button type="submit" asp-action="CreatePost" asp-controller="Home" class="material-symbols-outlined footer-btn edit-icon">
                             edit
                         </button>
-                        <button type="submit" asp-action="DeletePost" class="material-symbols-outlined owner delete-icon">
+                        <button type="submit" asp-action="DeletePost" class="material-symbols-outlined footer-btn delete-icon">
                             delete
                         </button>
                     </form>

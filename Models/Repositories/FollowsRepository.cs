@@ -12,16 +12,9 @@ namespace ThreadsASP.Models
         }
         public IQueryable<Follow> Follows => _context.Follows.Include(x => x.FollowingUser).Include(x => x.FollowerUser);
 
-        public void Follow(ApplicationUser currentUser, ApplicationUser selectedUser)
+        public void Follow(Follow f)
         {
-            var newFollow = new Follow
-            {
-                FollowingUser = currentUser,
-                FollowingUserId = currentUser.Id,
-                FollowerUser = selectedUser,
-                FollowerUserId = selectedUser.Id
-            };
-            _context.Add(newFollow);
+            _context.Add(f);
             _context.SaveChanges();
         }
 

@@ -89,7 +89,7 @@ namespace ThreadsASP.Controllers
         
 
         [HttpGet("{action}")]
-        public async Task<IActionResult> CreatePost(Post editPost, long? repostId)
+        public async Task<IActionResult> CreatePost(long? editPostId, long? repostId)
         {
             var currentUser = await _userManager.GetUserAsync(User);
             var repost = await _postsRepository.Posts.FirstOrDefaultAsync(x => x.Id == repostId);
@@ -101,12 +101,14 @@ namespace ThreadsASP.Controllers
                     Repost = repost
                 });
             }
-            if (editPost?.Id != 0 && editPost.AppUserId == currentUser.Id)
+            var editPost = await _postsRepository.Posts.FirstOrDefaultAsync(x => x.Id == editPostId);
+            if (editPost != null && editPost.AppUserId == currentUser.Id)
             {
                 editPost.AppUser = currentUser;
                 return View(new CreatePostViewModel
                 {
-                    NewPost = editPost
+                    NewPost = editPost,
+                    Repost = editPost.Repost
                 });
             }
             return View(new CreatePostViewModel
@@ -131,6 +133,12 @@ namespace ThreadsASP.Controllers
                     var oldPost = _postsRepository.Posts.FirstOrDefault(p => p.Id == editPostId);
                     LocalFileService.DeleteImage(oldPost.ImgName);
                     _postsRepository.DeletePost(oldPost);
+                    if (repostId != 0)
+                    {
+                        var repost = _postsRepository.Posts.FirstOrDefault(r => r.Id == repostId);
+                        await CreatePostMethodAsync(TextArea, file, newFileName, repost);
+                        return RedirectToAction("Index");
+                    }
                     await CreatePostMethodAsync(TextArea, file, newFileName, null);
                     return RedirectToAction("Index");
                 }

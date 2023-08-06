@@ -32,10 +32,9 @@
                         <span class="username">@@@u.UserName</span>
                     </h4>
                 </div>
-                <form method="post" class="follow-btn">
-                    <input type="hidden" name="selectedUserId" value="@u.Id" />
-                    <button asp-action="Follow" asp-controller="UserProfile">Follow</button>
-                </form>
+                <div class="follow-btn">
+                    <button style="width: 90px; margin: 0; padding: 0;" class="btn follow" onclick="follow(event, '@u.Id', this);"></button>
+                </div>
             </div>
         }
     </div>

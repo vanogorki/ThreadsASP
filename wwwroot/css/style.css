@@ -128,10 +128,6 @@ body {
     .post.repost .text {
         max-width: 450px;
     }
-
-    .profile-info .btn {
-        margin-left: 300px;
-    }
 }
 
 @media screen and (max-width: 800px) {
@@ -152,10 +148,6 @@ body {
     .post.repost .text {
         max-width: 200px;
     }
-
-    .profile-info .btn {
-        margin-left: 100px;
-    }
 }
 
 @media screen and (min-width: 541px) {
@@ -169,10 +161,6 @@ body {
 }
 
 @media screen and (max-width: 540px) {
-    .profile-info .btn {
-        margin-left: 50px;
-    }
-
     .sidebar {
         position: fixed;
         z-index: 999;
@@ -446,25 +434,7 @@ body {
         justify-content: flex-end;
     }
 
-        .post .footer .repost-form {
-            cursor: pointer;
-            transition: color 100ms ease-out;
-        }
-
-            .post .footer .repost-form:hover {
-                color: #48cc48;
-            }
-
-                .post .footer .repost-form:hover .btn.fa-retweet {
-                    background-color: #e4ffe4;
-                    color: #48cc48;
-                }
-
-        .post .footer .reposts-count {
-            font-weight: 500;
-        }
-
-        .post .footer .btn {
+        .post .footer .footer-btn {
             background: 0;
             border-radius: 50%;
             border: none;
@@ -475,13 +445,36 @@ body {
             transition: background-color 150ms ease-out;
         }
 
-            .post .footer .btn.fa-flag:hover {
+        .post .footer .repost-form {
+            margin-right: 10px;
+            cursor: pointer;
+            transition: color 100ms ease-out;
+        }
+
+            .post .footer .repost-form:hover {
+                color: #48cc48;
+            }
+
+                .post .footer .repost-form:hover .footer-btn.fa-retweet {
+                    background-color: #e4ffe4;
+                    color: #48cc48;
+                }
+
+        .post .footer .reposts-count {
+            font-weight: 500;
+        }
+
+        .post .footer .footer-btn.fa-flag {
+            margin-right: 10px;
+        }
+
+            .post .footer .footer-btn.fa-flag:hover {
                 color: red;
                 background-color: #facfcf;
             }
 
         .post .footer .like-form {
-            margin: 0 20px;
+            margin-right: 10px;
             cursor: pointer;
             transition: color 100ms ease-out;
         }
@@ -490,16 +483,16 @@ body {
                 color: #f556bf;
             }
 
-                .post .footer .like-form:hover .btn.like {
+                .post .footer .like-form:hover .footer-btn.like {
                     color: #f556bf;
                     background-color: #ffdef4;
                 }
 
-        .post .footer .btn.unlike {
+        .post .footer .footer-btn.unlike {
             color: #ff187d;
         }
 
-        .post .footer .like-form:hover .btn.unlike {
+        .post .footer .like-form:hover .footer-btn.unlike {
             background-color: #ffdef4;
         }
 
@@ -507,32 +500,28 @@ body {
             color: #ff187d;
         }
 
-        .post .footer .owner {
-            display: inline-flex;
-            padding: 10px;
-            border-radius: 50%;
-            border: 0px;
-            cursor: pointer;
-        }
-
-.edit-icon {
+.footer-btn.edit-icon {
+    font-size: 20px !important;
+    margin-right: 10px;
     color: #FFD700;
     background-color: white;
     transition: background-color 200ms ease-out;
 }
 
-    .edit-icon:hover {
-        background-color: #FFEA00;
+    .footer-btn.edit-icon:hover {
+        background-color: #fff9c2;
     }
 
-.delete-icon {
+.footer-btn.delete-icon {
+    font-size: 20px !important;
+    margin-right: 10px;
     color: #D22B2B;
     background-color: white;
     transition: background-color 200ms ease-out;
 }
 
-    .delete-icon:hover {
-        background-color: #FA8072;
+    .footer-btn.delete-icon:hover {
+        background-color: #ffbdbd;
     }
 
 
@@ -645,26 +634,10 @@ body {
         flex: auto;
         display: flex;
         justify-content: flex-end;
-        margin-top: 15px;
+        margin-top: auto;
+        margin-bottom: auto;
         margin-right: 10px;
     }
-
-        .find-user .follow-btn button {
-            background-color: black;
-            border: none;
-            color: white;
-            font-weight: 900;
-            border-radius: 25px;
-            width: 80px;
-            height: 35px;
-            margin-top: 5px;
-            transition: background-color 200ms ease-out;
-        }
-
-            .find-user .follow-btn button:hover {
-                background-color: #333333;
-                cursor: pointer;
-            }
 
 
 /*follow suggest ends*/
@@ -717,17 +690,6 @@ body {
             filter: brightness(80%)
         }
 
-    .profile-info .btn {
-        font-weight: 700;
-        font-size: 15px;
-        border-radius: 30px;
-        width: 120px;
-        height: 40px;
-        margin-top: 50px;
-        transition: background-color 200ms ease-out;
-        cursor: pointer;
-    }
-
     .profile-info .report-btn {
         background: 0;
         border-radius: 50%;
@@ -744,54 +706,63 @@ body {
             background-color: #facfcf;
         }
 
-    .profile-info .btn.edit {
+.btn {
+    font-weight: 700;
+    font-size: 15px;
+    border-radius: 30px;
+    width: 120px;
+    height: 40px;
+    transition: background-color 200ms ease-out;
+    cursor: pointer;
+}
+
+    .btn.edit {
         background-color: white;
         border: 1px solid var(--threads-background-color);
         color: black;
     }
 
-        .profile-info .btn.edit:hover {
+        .btn.edit:hover {
             background-color: var(--threads-background-color);
         }
 
-    .profile-info .btn.follow {
+    .btn.follow {
         background-color: black;
         border: none;
         color: white;
     }
 
-        .profile-info .btn.follow:hover {
+        .btn.follow::before {
+            content: 'Follow';
+        }
+
+        .btn.follow:hover {
             background-color: #333333;
         }
 
-    .profile-info .btn.unfollow {
+    .btn.unfollow {
         background-color: white;
         border: 1px solid var(--threads-background-color);
         color: black;
     }
 
-        .profile-info .btn.unfollow:hover {
+        .btn.unfollow::before {
+            content: 'Following';
+        }
+
+        .btn.unfollow:hover {
             font-size: 0;
             background-color: #ffbfbd;
             border: 1px solid crimson;
         }
 
-            .profile-info .btn.unfollow:hover:after {
+            .btn.unfollow:hover:after {
                 color: crimson;
                 font-size: 15px;
                 content: "Unfollow";
             }
 
-button .report {
-    background: 0;
-    border-radius: 50%;
-    border: 0;
-    width: 40px;
-    height: 40px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 150ms ease-out;
-}
+
 
 .profile-info .username {
     font-size: 15px;
@@ -803,6 +774,8 @@ button .report {
     font-size: 14px;
     font-weight: 300;
 }
+
+
 
 
 
@@ -844,44 +817,3 @@ button .report {
 
 /*crop image ends*/
 
-
-/*search result starts*/
-
-
-.find-user .unfollow-btn {
-    flex: auto;
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 15px;
-    margin-right: 10px;
-}
-
-    .find-user .unfollow-btn button {
-        background-color: white;
-        border: 1px solid var(--threads-background-color);
-        color: black;
-        font-weight: 700;
-        font-size: 15px;
-        border-radius: 25px;
-        width: 100px;
-        height: 35px;
-        margin-top: 5px;
-        transition: background-color 200ms ease-out;
-    }
-
-        .find-user .unfollow-btn button:hover {
-            font-size: 0;
-            cursor: pointer;
-            background-color: #ffbfbd;
-            border: 1px solid crimson;
-        }
-
-            .find-user .unfollow-btn button:hover:after {
-                color: crimson;
-                font-size: 15px;
-                content: "Unfollow";
-            }
-
-
-
-/*search result ends*/
