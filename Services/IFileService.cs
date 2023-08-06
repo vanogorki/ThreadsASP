@@ -4,6 +4,6 @@
     {
         Task UploadPostImageAsync(IFormFile file, string newFileName);
         void UploadProfileImage(IFormFile file, string newFileName);
-        static void DeleteImage(string? ImgName) { }
+        void DeleteImage(string ImgName);
     }
 }

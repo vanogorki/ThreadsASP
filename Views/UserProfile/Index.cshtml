@@ -55,13 +55,12 @@
                 </span>
                 <br />
                 <span class="username">@@@Model.SelectedUser?.UserName</span>
-                <br />
-                <span class="follows-count">
-                    <span onclick="location.href='@Model.SelectedUser.UserName/Following';">@((Model.FollowingCount != null) ? Model.FollowingCount : "0")  Following</span>
-                    
-                    &emsp; <span onclick="location.href='@Model.SelectedUser.UserName/Followers';">@((Model.FollowersCount != null) ? Model.FollowersCount : "0") Followers</span>
-                </span>
             </h2>
+            <div class="follows-count">
+                <a href="/@Model.SelectedUser.UserName/Following"><strong style="color: black">@((Model.FollowingCount != null) ? Model.FollowingCount : "0")</strong>  Following</a>
+
+                &emsp; <a href="/@Model.SelectedUser.UserName/Followers"><strong style="color: black">@((Model.FollowersCount != null) ? Model.FollowersCount : "0")</strong> Followers</a>
+            </div>
         </div>
     </div>
 

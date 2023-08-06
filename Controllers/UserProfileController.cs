@@ -54,9 +54,9 @@ namespace ThreadsASP.Controllers
             });
         }
 
-        public IActionResult DeletePost(long Id, string accName)
+        public IActionResult DeletePost(long editPostId, string accName)
         {
-            var removePost = _postsRepository.Posts.FirstOrDefault(p => p.Id == Id);
+            var removePost = _postsRepository.Posts.FirstOrDefault(p => p.Id == editPostId);
             if (removePost == null)
             {
                 return NotFound();
@@ -65,7 +65,7 @@ namespace ThreadsASP.Controllers
             {
                 removePost.Repost.RepostsCount--;
             }
-            LocalFileService.DeleteImage(removePost.ImgName);
+            _fileUploadService.DeleteImage(removePost.ImgName);
             _postsRepository.DeletePost(removePost);
             return Redirect($"/{accName}");
         }
@@ -87,7 +87,7 @@ namespace ThreadsASP.Controllers
                 _fileUploadService.UploadProfileImage(blob, newFileName);
                 if (user.ProfileImgName != "Default.jpg")
                 {
-                    LocalFileService.DeleteImage(user.ProfileImgName);
+                    _fileUploadService.DeleteImage(user.ProfileImgName);
                 }
                 user.ProfileImgName = newFileName;
                 _userRepository.SaveNewProfileData();

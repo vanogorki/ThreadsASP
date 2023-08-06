@@ -31,15 +31,14 @@
             }
         }
 
-        public static void DeleteImage(string? ImgName)
+        public void DeleteImage(string ImgName)
         {
             try
             {
                 File.Delete(@$"wwwroot\images\{ImgName}");
             }
-            catch (Exception e)
+            catch
             {
-                Console.WriteLine(e.ToString());
             }
         }
     }

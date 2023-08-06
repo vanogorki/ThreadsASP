@@ -762,8 +762,6 @@ body {
                 content: "Unfollow";
             }
 
-
-
 .profile-info .username {
     font-size: 15px;
     font-weight: 300;
@@ -771,11 +769,42 @@ body {
 }
 
 .profile-info .follows-count {
-    font-size: 14px;
-    font-weight: 300;
+    margin-top: 10px;
 }
 
+    .profile-info .follows-count a {
+        color: gray;
+        font-size: 14px;
+        font-weight: 300;
+        text-decoration: none;
+        cursor: pointer;
+    }
 
+.profile-info .follows-count a:hover {
+    text-decoration: underline;
+}
+
+.change-list_btns {
+    display: flex;
+    width: 100%;
+    height: 50px;
+    border-bottom: 1px solid var(--threads-background-color);
+}
+
+    .change-list_btns a {
+        color: black;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        flex: 0.5;
+        transition: background-color 200ms ease-out;
+    }
+
+    .change-list_btns a:hover {
+        background-color: var(--threads-background-color);
+    }
 
 
 

@@ -131,7 +131,7 @@ namespace ThreadsASP.Controllers
                 if (editPostId != 0)
                 {
                     var oldPost = _postsRepository.Posts.FirstOrDefault(p => p.Id == editPostId);
-                    LocalFileService.DeleteImage(oldPost.ImgName);
+                    _fileUploadService.DeleteImage(oldPost.ImgName);
                     _postsRepository.DeletePost(oldPost);
                     if (repostId != 0)
                     {

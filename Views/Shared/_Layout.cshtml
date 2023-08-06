@@ -43,7 +43,27 @@
                 type: "POST",
                 url: "/Home/Like",
                 data: { "postId": postId },
-                success: btn.classList = (btn.classList == "footer-btn unlike fa-solid fa-heart") ? "footer-btn like fa-regular fa-heart" : "footer-btn unlike fa-solid fa-heart"
+                success: function () {
+
+                    var likeCount = btn.parentNode.querySelector('.likes-count');
+
+                    if (btn.classList == "footer-btn unlike fa-solid fa-heart") {
+                        btn.classList = "footer-btn like fa-regular fa-heart";
+                        count = +likeCount.innerHTML;
+                        likeCount.innerHTML = count - 1;
+                        likeCount.classList.remove("liked");
+                        if (likeCount.innerHTML == 0) {
+                            likeCount.style.display = "none";
+                        }
+                    }
+                    else {
+                        btn.classList = "footer-btn unlike fa-solid fa-heart";
+                        count = +likeCount.innerHTML;
+                        likeCount.innerHTML = count + 1;
+                        likeCount.style.display = "inline-block";
+                        likeCount.classList.add("liked");
+                    }
+                }
             });
         }
 

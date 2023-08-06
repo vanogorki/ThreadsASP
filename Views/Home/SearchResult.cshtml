@@ -18,7 +18,7 @@
 
         @foreach (var f in Model.SearchUsers ?? Enumerable.Empty<ApplicationUser>())
         {
-            <div class="find-user" style="padding-left: 5px; border-radius: 0; border-bottom: 1px solid #E1E8ED;" onclick="redirectToUser(event, '@f.UserName');">
+            <div class="find-user" style="padding-left: 5px; border-radius: 0; border-bottom: 1px solid #E1E8ED;" onclick="location.href='/@f.UserName';">
                 <div class="info">
                     <div class="avatar">
                         <img src="/images/@f.ProfileImgName" />
